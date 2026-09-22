@@ -187,7 +187,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
 }
 
 
-.app-credit{padding:12px 16px calc(8px + env(safe-area-inset-bottom));text-align:center;color:#7d8fa3;font-size:11px;font-weight:700}
+.app-credit{padding:12px 16px calc(8px + env(safe-area-inset-bottom));text-align:center;color:#7d8fa3;font-size:11px;font-weight:700;font-family:inherit}
 .dark .app-credit{color:#8ea0b4}
 
 </style>
@@ -247,11 +247,10 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
     <div class="field">
       <span class="label">クイック入力</span>
       <div class="quick-grid" id="quickGrid"></div>
-      <div class="notice" id="halfDayNote"></div>
     </div>
     <div class="field">
       <label class="label" for="in_memo">メモ（任意）</label>
-      <textarea id="in_memo" placeholder="例）授業参観のため、通院のため"></textarea>
+      <input class="input" type="text" id="in_memo" placeholder="例）授業参観のため、通院のため">
     </div>
     <div class="field"><button type="button" class="primary" id="addBtn">追加する</button></div>
   </div>
@@ -377,7 +376,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
 </section>
 </main>
 
-<div class="app-credit">©️2026 Takayuki WAYAMA</div>
+<div class="app-credit">© 2026 Takayuki WAYAMA</div>
 
 <nav class="bottomnav">
   <button type="button" class="navbtn active" data-screen="Input"><span class="ico">＋</span><span>入力</span></button>
@@ -402,7 +401,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
         <div class="timebox"><span>分</span><input type="number" id="edit_m" min="0"></div>
       </div>
     </div>
-    <div class="field"><label class="label" for="edit_memo">メモ</label><textarea id="edit_memo"></textarea></div>
+    <div class="field"><label class="label" for="edit_memo">メモ</label><input class="input" type="text" id="edit_memo"></div>
     <div class="sheet-actions"><button type="button" class="cancel" id="editCancel">キャンセル</button><button type="button" class="save" id="editSave">保存</button></div>
   </div>
 </div>
@@ -592,9 +591,6 @@ function renderQuickButtons(){
     {kind:'day',min:DAY_MIN,label:'1日',sub:'7時間45分'}
   ];
   $('quickGrid').innerHTML=buttons.map(b=>`<button type="button" class="quick-btn" data-kind="${b.kind}" data-min="${b.min}">${b.label}${b.sub?`<small>${b.sub}</small>`:''}</button>`).join('');
-  $('halfDayNote').textContent=selectedType==='特休'
-    ? `特休は、半日を2回取得すると1日として集計します。`
-    : `年休は、7時間45分を1日として集計します。`;
 }
 
 function renderHalfSettings(){
@@ -631,7 +627,7 @@ function renderHistory(){
     }
   });
 
-  let items=[...monthItems].sort((a,b)=>(b.date||'').localeCompare(a.date||'') || (b.createdAt||0)-(a.createdAt||0));
+  let items=[...monthItems].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
   if(currentFilter!=='すべて') items=items.filter(x=>x.type===currentFilter);
 
   if(!items.length){
