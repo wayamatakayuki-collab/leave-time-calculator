@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leave-time-calculator-v2-balance-guard-actions-final';
+const CACHE_NAME = 'leave-time-calculator-v2-final-20260923';
 const ASSETS = [
   './',
   './index.html',
@@ -17,7 +17,9 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+    caches.keys().then(keys => Promise.all(
+      keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+    ))
   );
   self.clients.claim();
 });
@@ -31,6 +33,6 @@ self.addEventListener('fetch', event => {
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
         return response;
       })
-      .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+      .catch(() => caches.match(event.request).then(r => r || caches.match('./index.html')))
   );
 });

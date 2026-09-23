@@ -732,19 +732,70 @@ input[type="month"].choice-control{
 }
 
 
-/* 操作感：押したことが伝わるマイクロインタラクション */
+/* 操作感：スマホ・タブレット・PCで統一したマイクロインタラクション */
 button{
   -webkit-tap-highlight-color:transparent;
-  transition:transform .12s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,filter .16s ease,background-color .16s ease;
+  touch-action:manipulation;
   transform-origin:center;
+  transition:
+    transform .115s cubic-bezier(.2,.8,.2,1),
+    box-shadow .16s ease,
+    filter .16s ease,
+    background-color .16s ease,
+    border-color .16s ease,
+    color .16s ease;
 }
-button:not(:disabled):active{transform:translateY(1px) scale(.965);filter:brightness(.97)}
-button:disabled{cursor:not-allowed;opacity:.48}
-@keyframes buttonPop{0%{transform:scale(1)}45%{transform:scale(.94)}72%{transform:scale(1.025)}100%{transform:scale(1)}}
-@keyframes successGlow{0%{box-shadow:0 10px 24px rgba(22,135,248,.24)}50%{box-shadow:0 0 0 7px rgba(22,168,104,.13),0 12px 28px rgba(22,168,104,.22)}100%{box-shadow:0 10px 24px rgba(22,135,248,.24)}}
-.button-pop{animation:buttonPop .28s ease-out}
-.primary.action-success{animation:successGlow .52s ease-out}
-.quick-btn.button-pop,.today-btn.button-pop,.type-btn.button-pop,.navbtn.button-pop,.range-btn.button-pop,.filter-btn.button-pop,.icon-btn.button-pop,.fy-update-btn.button-pop{filter:brightness(.98)}
+button:disabled{cursor:not-allowed;opacity:.48;transform:none!important;filter:none!important}
+
+/* 指を置いた瞬間／マウスを押した瞬間に必ず反応 */
+button:not(:disabled).is-pressed{
+  transform:translateY(1px) scale(.965)!important;
+  filter:brightness(.965)!important;
+}
+
+/* クリック完了時の小さな戻りアニメーション */
+@keyframes buttonPop{
+  0%{transform:scale(1)}
+  35%{transform:scale(.965)}
+  68%{transform:scale(1.018)}
+  100%{transform:scale(1)}
+}
+@keyframes successGlow{
+  0%{box-shadow:0 10px 24px rgba(22,135,248,.24)}
+  48%{box-shadow:0 0 0 7px rgba(22,168,104,.13),0 12px 28px rgba(22,168,104,.22)}
+  100%{box-shadow:0 10px 24px rgba(22,135,248,.24)}
+}
+.button-pop{animation:buttonPop .26s ease-out!important}
+.primary.action-success{animation:successGlow .52s ease-out!important}
+
+/* PCでは「押せる」ことがマウスを乗せた時にも分かる */
+@media (hover:hover) and (pointer:fine){
+  button:not(:disabled):hover{
+    filter:brightness(1.018);
+  }
+  .primary:not(:disabled):hover,
+  .fy-update-btn:not(:disabled):hover{
+    transform:translateY(-1px);
+    box-shadow:0 12px 28px rgba(22,135,248,.18);
+  }
+  .setting-row:not(:disabled):hover{
+    background:#f8fbff;
+  }
+  body.dark .setting-row:not(:disabled):hover{
+    background:#1b2a3b;
+  }
+}
+
+/* キーボード操作時もフィードバックを統一 */
+button:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(22,135,248,.20)!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  button{transition:none}
+  .button-pop,.primary.action-success{animation:none!important}
+}
 
 </style>
 </head>
@@ -1647,19 +1698,58 @@ function applySettings(){
   $('darkToggle').checked=s.dark;
 }
 
+function setButtonPressed(btn,on){
+  if(!btn || btn.disabled) return;
+  btn.classList.toggle('is-pressed',!!on);
+}
+
 function animateButton(btn){
   if(!btn || btn.disabled) return;
   btn.classList.remove('button-pop');
   void btn.offsetWidth;
   btn.classList.add('button-pop');
-  setTimeout(()=>btn.classList.remove('button-pop'),300);
+  const done=()=>btn.classList.remove('button-pop');
+  btn.addEventListener('animationend',done,{once:true});
+  setTimeout(done,360);
+}
+
+function initButtonFeedback(){
+  document.addEventListener('pointerdown',e=>{
+    const btn=e.target.closest('button');
+    if(!btn || btn.disabled) return;
+    setButtonPressed(btn,true);
+  },true);
+
+  const release=()=>{
+    document.querySelectorAll('button.is-pressed').forEach(btn=>setButtonPressed(btn,false));
+  };
+  document.addEventListener('pointerup',release,true);
+  document.addEventListener('pointercancel',release,true);
+  window.addEventListener('blur',release);
+
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('button');
+    if(btn && !btn.disabled) animateButton(btn);
+  },true);
+
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Enter' && e.key!==' ') return;
+    const btn=e.target.closest && e.target.closest('button');
+    if(btn && !btn.disabled) setButtonPressed(btn,true);
+  },true);
+
+  document.addEventListener('keyup',e=>{
+    if(e.key!=='Enter' && e.key!==' ') return;
+    const btn=e.target.closest && e.target.closest('button');
+    if(btn && !btn.disabled){
+      setButtonPressed(btn,false);
+      animateButton(btn);
+    }
+  },true);
 }
 
 function init(){
-  document.addEventListener('click',e=>{
-    const btn=e.target.closest('button');
-    if(btn) animateButton(btn);
-  },true);
+  initButtonFeedback();
   $('in_date').value=todayISO();
   $('monthPicker').value=currentMonthISO();
   populateYearPicker();

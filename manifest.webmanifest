@@ -1,13 +1,13 @@
 {
   "name": "休暇計算アプリ v2",
   "short_name": "休暇計算アプリ v2",
-  "description": "年休・特休の取得時間、残り年休、繰越年休をスマホで管理できるアプリです。",
+  "description": "年休・特休の取得時間、残り年休、繰越年休を管理できる休暇時間計算アプリ",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f3f7fc",
   "theme_color": "#1687f8",
-  "orientation": "portrait-primary",
+  "lang": "ja",
   "icons": [
     {
       "src": "icon-192.png",
