@@ -1031,6 +1031,62 @@ button:focus-visible{
 .type-rule-hint[hidden]{display:none!important}
 .summer-balance-section{grid-column:1 / -1}
 
+
+/* ===== 履歴「現在の累計」：3段表示で折り返しを防止 ===== */
+#screenHistory .leave-summary-grid{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:8px !important;
+  min-width:0;
+}
+#screenHistory .leave-summary-card{
+  display:grid !important;
+  grid-template-columns:max-content minmax(0,1fr);
+  grid-template-areas:
+    "label value"
+    ". sub";
+  align-items:center;
+  column-gap:14px;
+  row-gap:2px;
+  min-width:0;
+  padding:12px 14px !important;
+}
+#screenHistory .leave-summary-label{
+  grid-area:label;
+  min-width:0;
+  font-size:12px !important;
+  white-space:nowrap;
+}
+#screenHistory .leave-summary-value{
+  grid-area:value;
+  margin:0 !important;
+  min-width:0;
+  text-align:right;
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+  overflow-wrap:normal !important;
+  font-size:clamp(17px,4.5vw,23px) !important;
+  line-height:1.15 !important;
+  letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums;
+}
+#screenHistory .leave-summary-min{
+  grid-area:sub;
+  margin:0;
+  text-align:right;
+  white-space:nowrap;
+  font-size:11px;
+}
+@media (min-width:768px){
+  #screenHistory .leave-summary-card{padding:13px 15px !important}
+  #screenHistory .leave-summary-value{font-size:21px !important}
+}
+@media (max-width:360px){
+  #screenHistory .leave-summary-card{column-gap:9px;padding:11px 12px !important}
+  #screenHistory .leave-summary-label{font-size:11px !important}
+  #screenHistory .leave-summary-value{font-size:16px !important;letter-spacing:-.055em}
+}
+
 </style>
 </head>
 <body>
