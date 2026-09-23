@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1687f8">
-  <meta name="description" content="年次休暇・特別休暇の取得時間、残り年次休暇、繰越年次休暇をスマホで管理できる休暇時間計算アプリです。">
+  <meta name="description" content="年次休暇・特別休暇・夏季休暇の取得時間、残り年次休暇、繰越年次休暇を管理できる休暇時間計算アプリです。">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="休暇計算アプリ v2">
@@ -13,12 +13,12 @@
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <meta property="og:type" content="website">
   <meta property="og:title" content="休暇計算アプリ v2">
-  <meta property="og:description" content="年次休暇・特別休暇の取得時間、残り年次休暇、繰越年次休暇をスマホでかんたん管理。">
+  <meta property="og:description" content="年次休暇・特別休暇・夏季休暇の取得時間、残り年次休暇、繰越年次休暇をかんたん管理。">
   <meta property="og:image" content="https://wayamatakayuki-collab.github.io/leave-time-calculator/og-image.png">
   <meta property="og:url" content="https://wayamatakayuki-collab.github.io/leave-time-calculator/">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="休暇計算アプリ v2">
-  <meta name="twitter:description" content="年次休暇・特別休暇の取得時間、残り年次休暇、繰越年次休暇をスマホでかんたん管理。">
+  <meta name="twitter:description" content="年次休暇・特別休暇・夏季休暇の取得時間、残り年次休暇、繰越年次休暇をかんたん管理。">
   <meta name="twitter:image" content="https://wayamatakayuki-collab.github.io/leave-time-calculator/og-image.png">
 
 <title>休暇時間計算アプリ</title>
@@ -51,7 +51,7 @@ main{padding:16px}.screen{display:none}.screen.active{display:block}
 .leave-summary-card{background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.95);border-radius:17px;padding:14px 12px;box-shadow:0 8px 20px rgba(41,92,140,.06)}
 .leave-summary-label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:900;color:#5d7590}
 .leave-dot{width:8px;height:8px;border-radius:50%}
-.leave-dot.year{background:#e5536d}.leave-dot.special{background:#22a267}
+.leave-dot.year{background:#e5536d}.leave-dot.special{background:#22a267}.leave-dot.summer{background:#f2a51a}
 .leave-summary-value{margin-top:7px;font-size:21px;font-weight:950;letter-spacing:-.03em;line-height:1.18}
 
 .quick-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -167,8 +167,8 @@ textarea{resize:vertical;min-height:84px}.date-row{
   position:relative;
   z-index:2;
 }.today-btn{border:0;border-radius:14px;background:var(--brand-soft);color:var(--brand);font-weight:900;padding:0 14px}
-.type-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.type-btn{border:1px solid var(--line);background:#fff;border-radius:13px;min-height:44px;font-weight:900;color:#5f6f82}
-.type-btn.active[data-type="年次休暇"]{background:#fff1f3;border-color:#ffccd4;color:#d7425c}.type-btn.active[data-type="特別休暇"]{background:#eef9f2;border-color:#bce7cb;color:#168855}
+.type-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.type-btn{border:1px solid var(--line);background:#fff;border-radius:13px;min-height:44px;font-weight:900;color:#5f6f82}
+.type-btn.active[data-type="年次休暇"]{background:#fff1f3;border-color:#ffccd4;color:#d7425c}.type-btn.active[data-type="特別休暇"]{background:#eef9f2;border-color:#bce7cb;color:#168855}.type-btn.active[data-type="夏季休暇"]{background:#fff8e8;border-color:#f5d58b;color:#b87500}
 .time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.timebox{position:relative}.timebox input{width:100%;border:1px solid var(--line);background:#fff;border-radius:14px;padding:22px 10px 10px;text-align:center;font-weight:900;font-size:20px;outline:none;min-height:64px}
 .timebox span{position:absolute;top:7px;left:10px;font-size:10px;color:var(--muted);font-weight:800}.timebox input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(22,135,248,.12)}
 .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.quick-btn{border:1px solid #bfe3ff;background:#f2f9ff;color:#0872d4;border-radius:13px;min-height:48px;padding:7px;font-weight:900;line-height:1.15}.quick-btn small{display:block;font-size:9px;color:#6b8ba9;margin-top:2px}
@@ -176,10 +176,10 @@ textarea{resize:vertical;min-height:84px}.date-row{
 .secondary-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.secondary{border:1px solid var(--line);background:#fff;color:#52657b;border-radius:13px;min-height:44px;font-weight:800}
 .notice{margin-top:10px;font-size:11px;color:var(--muted);line-height:1.55;text-align:center}
 .month-card{padding:14px;margin-bottom:12px}.month-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.month-title{font-size:15px;font-weight:900}.month-select{max-width:145px;padding:10px 12px;min-height:42px}
-.month-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.month-stat{padding:11px;border-radius:14px;background:#f7fbff;border:1px solid #e1eef9}.month-stat .a{font-size:10px;color:var(--muted);font-weight:800}.month-stat .b{margin-top:3px;font-size:16px;font-weight:900}
+.month-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.month-stat{padding:11px;border-radius:14px;background:#f7fbff;border:1px solid #e1eef9}.month-stat .a{font-size:10px;color:var(--muted);font-weight:800}.month-stat .b{margin-top:3px;font-size:16px;font-weight:900}
 .filters{display:flex;gap:7px;overflow:auto;padding:2px 0 10px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.filter-btn{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 13px;color:#65758a;font-weight:800;font-size:12px}.filter-btn.active{background:var(--brand);border-color:var(--brand);color:#fff}
 .history-list{display:flex;flex-direction:column;gap:9px}.empty{padding:28px 18px;text-align:center;color:var(--muted);font-size:13px}.hist{padding:13px}.hist-top{display:flex;align-items:flex-start;gap:10px}.datebox{min-width:48px;text-align:center}.datebox .md{font-size:17px;font-weight:900}.datebox .dow{font-size:10px;color:var(--muted)}
-.hist-main{flex:1;min-width:0}.hist-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.pill{font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px}.pill.year{background:#fff1f3;color:#d7425c}.pill.special{background:#eef9f2;color:#168855}.hist-time{font-size:16px;font-weight:900}
+.hist-main{flex:1;min-width:0}.hist-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.pill{font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px}.pill.year{background:#fff1f3;color:#d7425c}.pill.special{background:#eef9f2;color:#168855}.pill.summer{background:#fff8e8;color:#b87500}.hist-time{font-size:16px;font-weight:900}
 .hist-cumul{text-align:right;font-size:10px;color:var(--muted);min-width:88px}.hist-cumul strong{display:block;color:var(--ink);font-size:12px;margin-top:3px}.memo{margin-top:8px;font-size:11px;color:#65758a;background:#f8fafc;border-radius:10px;padding:7px 9px;line-height:1.5}.hist-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.icon-btn{border:0;background:#f5f8fc;color:#58708a;border-radius:10px;min-width:48px;min-height:34px;font-weight:800}.icon-btn.danger{background:var(--danger-soft);color:var(--danger)}
 .setting-section{margin-top:12px}.setting-head{font-size:12px;color:#54708d;font-weight:900;margin:0 5px 7px}.setting-card{overflow:hidden}.setting-row{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #edf1f6;background:#fff}.setting-row:last-child{border-bottom:0}.setting-icon{width:34px;height:34px;border-radius:10px;background:#eef6ff;color:var(--brand);display:grid;place-items:center;font-size:14px;font-weight:900;flex:0 0 auto}.setting-text{flex:1;min-width:0}.setting-title{font-size:14px;font-weight:900}.setting-sub{font-size:10px;color:var(--muted);margin-top:2px}.setting-select{width:auto;min-width:118px;padding:9px 30px 9px 10px;min-height:40px}
 .half-setting{display:grid;grid-template-columns:48px auto 48px auto;align-items:center;gap:4px;font-size:11px;color:var(--muted);font-weight:800}
@@ -967,6 +967,47 @@ button:focus-visible{
   background:#fff0f2;
 }
 
+
+/* 3種類の休暇を同じ階層で表示 */
+.leave-summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.compact-side{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.compact-chip{min-width:0}
+@media (max-width:520px){
+  .compact-status{grid-template-columns:1fr;gap:8px}
+  .compact-main{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .compact-value{font-size:19px}
+  .compact-side{width:100%;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .compact-chip{padding:6px 4px}
+  .compact-chip span{font-size:8px}
+  .compact-chip strong{font-size:10px}
+  .leave-summary-grid{gap:6px}
+  .leave-summary-card{padding:11px 7px}
+  .leave-summary-label{font-size:10px}
+  .leave-summary-value{font-size:15px}
+  .month-stats{gap:6px}
+  .month-stat{padding:9px 6px}
+  .month-stat .a{font-size:9px}
+  .month-stat .b{font-size:14px}
+}
+@media (min-width:768px){
+  #screenInput .compact-side{grid-template-columns:repeat(3,1fr)}
+}
+
+
+.type-rule-hint{
+  margin-top:8px;
+  padding:9px 11px;
+  border-radius:11px;
+  background:#fff8e8;
+  border:1px solid #f5ddb0;
+  color:#8a6200;
+  font-size:11px;
+  font-weight:800;
+  line-height:1.55;
+}
+.type-rule-hint[hidden]{display:none!important}
+.summer-balance-section{grid-column:1 / -1}
+
 </style>
 </head>
 <body>
@@ -997,6 +1038,7 @@ button:focus-visible{
     <div class="compact-side">
       <div class="compact-chip"><span>年次休暇</span><strong id="inputAnnualTotal">0日</strong></div>
       <div class="compact-chip"><span>特別休暇</span><strong id="inputSpecialTotal">0日</strong></div>
+      <div class="compact-chip"><span>夏季休暇</span><strong id="inputSummerTotal">0日</strong></div>
     </div>
   </div>
 
@@ -1011,9 +1053,11 @@ button:focus-visible{
       <div class="type-row" id="typeRow">
         <button type="button" class="type-btn active" data-type="年次休暇">年次休暇</button>
         <button type="button" class="type-btn" data-type="特別休暇">特別休暇</button>
+        <button type="button" class="type-btn" data-type="夏季休暇">夏季休暇</button>
       </div>
+      <div id="summerRuleHint" class="type-rule-hint" hidden>夏季休暇は「特別休暇（夏季休暇）」として、半日または1日単位で取得します。</div>
     </div>
-    <div class="field">
+    <div class="field" id="timeInputField">
       <span class="label">追加する時間</span>
       <div class="time-grid">
         <div class="timebox"><span>日</span><input type="number" id="in_d" inputmode="numeric" min="0" value="0"></div>
@@ -1045,6 +1089,11 @@ button:focus-visible{
         <div class="leave-summary-label"><span class="leave-dot special"></span>特別休暇</div>
         <div id="specialTotal" class="leave-summary-value">0日 0時間 0分</div>
       </div>
+      <div class="leave-summary-card">
+        <div class="leave-summary-label"><span class="leave-dot summer"></span>夏季休暇</div>
+        <div id="summerTotal" class="leave-summary-value">0日</div>
+        <div id="summerRemaining" class="leave-summary-min">残り 6日</div>
+      </div>
     </div>
     <div class="remaining-card">
       <div class="remaining-top">
@@ -1062,6 +1111,7 @@ button:focus-visible{
     <div class="month-stats">
       <div class="month-stat"><div class="a">年次休暇</div><div class="b" id="yearAnnualTotal">0日</div></div>
       <div class="month-stat"><div class="a">特別休暇</div><div class="b" id="yearSpecialTotal">0日</div></div>
+      <div class="month-stat"><div class="a">夏季休暇</div><div class="b" id="yearSummerTotal">0日</div></div>
     </div>
   </div>
 
@@ -1070,6 +1120,7 @@ button:focus-visible{
     <div class="month-stats">
       <div class="month-stat"><div class="a">年次休暇</div><div class="b" id="monthAnnualTotal">0分</div></div>
       <div class="month-stat"><div class="a">特別休暇</div><div class="b" id="monthSpecialTotal">0分</div></div>
+      <div class="month-stat"><div class="a">夏季休暇</div><div class="b" id="monthSummerTotal">0分</div></div>
     </div>
   </div>
   <div class="history-range">
@@ -1083,6 +1134,7 @@ button:focus-visible{
     <button type="button" class="filter-btn active" data-filter="すべて">すべて</button>
     <button type="button" class="filter-btn" data-filter="年次休暇">年次休暇</button>
     <button type="button" class="filter-btn" data-filter="特別休暇">特別休暇</button>
+    <button type="button" class="filter-btn" data-filter="夏季休暇">夏季休暇</button>
   </div>
   <div id="historyList" class="history-list"></div>
 </section>
@@ -1101,10 +1153,18 @@ button:focus-visible{
       </div>
       <div class="setting-row">
         <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.6 4.3L18 9l-4.4 1.7L12 15l-1.6-4.3L6 9l4.4-1.7L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
-        <div class="setting-text"><div class="setting-title">特別休暇の半日</div><div class="setting-sub">初期値は3時間55分。（半日2回分で1日として集計）</div></div>
+        <div class="setting-text"><div class="setting-title">特別休暇の半日</div><div class="setting-sub">初期値は4時間。</div></div>
         <div class="half-setting">
           <input type="number" id="specialHalfH" min="0" max="7" inputmode="numeric" aria-label="特別休暇半日の時間"><span>時間</span>
           <input type="number" id="specialHalfM" min="0" max="59" inputmode="numeric" aria-label="特別休暇半日の分"><span>分</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="setting-text"><div class="setting-title">夏季休暇の半日</div><div class="setting-sub">初期値は3時間55分。（半日2回分で1日として集計）</div></div>
+        <div class="half-setting">
+          <input type="number" id="summerHalfH" min="0" max="7" inputmode="numeric" aria-label="夏季休暇半日の時間"><span>時間</span>
+          <input type="number" id="summerHalfM" min="0" max="59" inputmode="numeric" aria-label="夏季休暇半日の分"><span>分</span>
         </div>
       </div>
     </div>
@@ -1142,6 +1202,22 @@ button:focus-visible{
           <input type="number" id="carryDays" min="0" max="20" inputmode="numeric" aria-label="繰越年次休暇の日"><span>日</span>
           <input type="number" id="carryHours" min="0" max="7" inputmode="numeric" aria-label="繰越年次休暇の時間"><span>時間</span>
           <input type="number" id="carryMinutes" min="0" max="59" inputmode="numeric" aria-label="繰越年次休暇の分"><span>分</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="setting-section summer-balance-section">
+    <div class="setting-head">夏季休暇の管理</div>
+    <div class="card setting-card">
+      <div class="setting-row">
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="setting-text">
+          <div class="setting-title">今年度の夏季休暇</div>
+          <div class="setting-sub">原則6日。位置付けは「特別休暇（夏季休暇）」です</div>
+        </div>
+        <div class="grant-day-only">
+          <input type="number" id="summerGrantDays" min="0" max="31" inputmode="numeric" aria-label="今年度の夏季休暇の日数"><span>日</span>
         </div>
       </div>
     </div>
@@ -1197,12 +1273,19 @@ button:focus-visible{
     <h3>履歴を編集</h3>
     <input type="hidden" id="edit_id">
     <div class="field"><label class="label" for="edit_date">日付</label><input class="input" type="date" id="edit_date"></div>
-    <div class="field"><label class="label" for="edit_type">休暇種別</label><select id="edit_type" class="choice-control"><option>年次休暇</option><option>特別休暇</option></select></div>
-    <div class="field"><span class="label">時間</span>
+    <div class="field"><label class="label" for="edit_type">休暇種別</label><select id="edit_type" class="choice-control"><option>年次休暇</option><option>特別休暇</option><option>夏季休暇</option></select></div>
+    <div class="field" id="editTimeField"><span class="label">時間</span>
       <div class="time-grid">
         <div class="timebox"><span>日</span><input type="number" id="edit_d" min="0"></div>
         <div class="timebox"><span>時間</span><input type="number" id="edit_h" min="0"></div>
         <div class="timebox"><span>分</span><input type="number" id="edit_m" min="0"></div>
+      </div>
+    </div>
+    <div class="field" id="editSummerQuickField" hidden>
+      <span class="label">夏季休暇の取得単位</span>
+      <div class="quick-grid">
+        <button type="button" class="quick-btn edit-summer-quick" data-kind="half">半日<small>3時間55分</small></button>
+        <button type="button" class="quick-btn edit-summer-quick" data-kind="day">1日<small>7時間45分</small></button>
       </div>
     </div>
     <div class="field"><label class="label" for="edit_memo">メモ</label><input class="input" type="text" id="edit_memo"></div>
@@ -1222,13 +1305,15 @@ const KEY_V2 = 'leave_time_v2';
 const SETTINGS_KEY = 'leave_time_v2_settings';
 const $ = id => document.getElementById(id);
 
-const DEFAULT_SETTINGS = { dark:false, annualHalf:240, specialHalf:235, annualGrantMinutes:0, carryMinutes:0, currentFiscalYear:null, fiscalBalances:{} };
+const DEFAULT_SETTINGS = { dark:false, annualHalf:240, specialHalf:240, summerHalf:235, summerGrantDays:6, leaveRulesVersion:4, annualGrantMinutes:0, carryMinutes:0, currentFiscalYear:null, fiscalBalances:{} };
 const ANNUAL_TYPE = '年次休暇';
 const SPECIAL_TYPE = '特別休暇';
+const SUMMER_TYPE = '夏季休暇';
 function normalizeLeaveType(type){
   if(type==='年休') return ANNUAL_TYPE;
   if(type==='特休') return SPECIAL_TYPE;
-  if(type===ANNUAL_TYPE || type===SPECIAL_TYPE) return type;
+  if(type==='夏季' || type==='夏休') return SUMMER_TYPE;
+  if(type===ANNUAL_TYPE || type===SPECIAL_TYPE || type===SUMMER_TYPE) return type;
   return ANNUAL_TYPE;
 }
 let selectedType = '年次休暇';
@@ -1296,7 +1381,8 @@ function loadSettings(){
     if(!balances[currentFY]){
       balances[currentFY]={
         annualGrantMinutes:grantMinutesOf(obj),
-        carryMinutes:Number.isFinite(Number(obj.carryMinutes)) ? Math.min(MAX_CARRY_MIN,Math.max(0,Number(obj.carryMinutes))) : DEFAULT_SETTINGS.carryMinutes
+        carryMinutes:Number.isFinite(Number(obj.carryMinutes)) ? Math.min(MAX_CARRY_MIN,Math.max(0,Number(obj.carryMinutes))) : DEFAULT_SETTINGS.carryMinutes,
+        summerGrantDays:Number.isFinite(Number(obj.summerGrantDays)) ? Math.max(0,Math.min(31,toInt(obj.summerGrantDays))) : 6
       };
     }
     // 各年度の旧 annualGrantDays も分換算へ移行する。
@@ -1304,12 +1390,17 @@ function loadSettings(){
       const b=balances[y]||{};
       b.annualGrantMinutes=grantMinutesOf(b);
       b.carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Number(b.carryMinutes)||0));
+      b.summerGrantDays=Number.isFinite(Number(b.summerGrantDays)) ? Math.max(0,Math.min(31,toInt(b.summerGrantDays))) : 6;
       balances[y]=b;
     });
     return {
       dark: !!obj.dark,
       annualHalf: Number.isFinite(Number(obj.annualHalf)) ? Number(obj.annualHalf) : DEFAULT_SETTINGS.annualHalf,
-      specialHalf: Number.isFinite(Number(obj.specialHalf)) ? Number(obj.specialHalf) : DEFAULT_SETTINGS.specialHalf,
+      // v3で修正：特別休暇の半日は4時間、3時間55分は夏季休暇。旧設定は自動補正する。
+      specialHalf: Number(obj.leaveRulesVersion)>=3 && Number.isFinite(Number(obj.specialHalf)) ? Number(obj.specialHalf) : 240,
+      summerHalf: Number.isFinite(Number(obj.summerHalf)) ? Number(obj.summerHalf) : DEFAULT_SETTINGS.summerHalf,
+      summerGrantDays:Number.isFinite(Number(balances[currentFY]?.summerGrantDays)) ? Math.max(0,Math.min(31,toInt(balances[currentFY].summerGrantDays))) : 6,
+      leaveRulesVersion:4,
       annualGrantMinutes:grantMinutesOf(balances[currentFY]),
       carryMinutes:Math.min(MAX_CARRY_MIN,Math.max(0,Number(balances[currentFY]?.carryMinutes||0))),
       currentFiscalYear:currentFY,
@@ -1317,7 +1408,7 @@ function loadSettings(){
     };
   }catch(e){
     const fy=fiscalYearOf(todayISO());
-    return {...DEFAULT_SETTINGS,currentFiscalYear:fy,fiscalBalances:{[fy]:{annualGrantMinutes:0,carryMinutes:0}}};
+    return {...DEFAULT_SETTINGS,currentFiscalYear:fy,fiscalBalances:{[fy]:{annualGrantMinutes:0,carryMinutes:0,summerGrantDays:6}}};
   }
 }
 function saveSettings(s){
@@ -1325,9 +1416,10 @@ function saveSettings(s){
   if(!s.fiscalBalances || typeof s.fiscalBalances!=='object') s.fiscalBalances={};
   s.annualGrantMinutes=Math.floor(Math.max(0,Math.round(Number(s.annualGrantMinutes)||0))/DAY_MIN)*DAY_MIN;
   s.carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Math.round(Number(s.carryMinutes)||0)));
-  s.fiscalBalances[fy]={annualGrantMinutes:s.annualGrantMinutes,carryMinutes:s.carryMinutes};
+  s.summerGrantDays=Math.max(0,Math.min(31,toInt(s.summerGrantDays ?? 6))); s.fiscalBalances[fy]={annualGrantMinutes:s.annualGrantMinutes,carryMinutes:s.carryMinutes,summerGrantDays:s.summerGrantDays};
   // 旧フィールドは保存しない（読み込み互換のみ維持）。
   delete s.annualGrantDays;
+  s.leaveRulesVersion=4;
   localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));
 }
 
@@ -1355,17 +1447,24 @@ function migrateV1(){
 }
 function recalc(st){
   const settings=loadSettings();
-  let rawTotal=0, specialHalfCount=0;
+  let rawTotal=0, summerHalfCount=0;
   st.items.forEach(it=>{
     it.type=normalizeLeaveType(it.type);
+
+    // 旧版で「特別休暇の3時間55分半日」として保存されたデータを、正しい4時間へ補正する。
+    if(it.type===SPECIAL_TYPE && it.specialHalf===true){
+      it.delta=settings.specialHalf;
+      const n=normalize(settings.specialHalf);
+      it.d=n.d; it.h=n.h; it.m=n.m;
+      it.halfDay=true;
+      it.specialHalf=false;
+      it.summerHalf=false;
+    }
+
     const delta=Number(it.delta)||0;
     rawTotal += delta;
-
-    // 特別休暇だけ、設定された「半日」として登録されたデータを2回で1日に補正する。
-    if(it.type==='特別休暇' && it.specialHalf===true){
-      specialHalfCount++;
-    }
-    const correction=Math.floor(specialHalfCount/2)*(settings.specialHalf*2-DAY_MIN);
+    if(it.type===SUMMER_TYPE && it.summerHalf===true) summerHalfCount++;
+    const correction=Math.floor(summerHalfCount/2)*(settings.summerHalf*2-DAY_MIN);
     it.cumul=rawTotal-correction;
   });
   st.sum=st.items.length ? Number(st.items[st.items.length-1].cumul)||0 : 0;
@@ -1376,7 +1475,7 @@ function loadState(){
     const raw=localStorage.getItem(KEY_V2);
     if(raw){
       const parsed=JSON.parse(raw);
-      if(parsed && Array.isArray(parsed.items)) return recalc(parsed);
+      if(parsed && Array.isArray(parsed.items)){ const migrated=recalc(parsed); saveState(migrated); return migrated; }
     }
     const migrated=recalc(migrateV1());
     saveState(migrated);
@@ -1387,12 +1486,12 @@ function saveState(st){ localStorage.setItem(KEY_V2,JSON.stringify(st)); }
 
 function adjustedTotal(items){
   const settings=loadSettings();
-  let raw=0, specialHalfCount=0;
+  let raw=0, summerHalfCount=0;
   items.forEach(it=>{
     raw += Number(it.delta)||0;
-    if(it.type==='特別休暇' && it.specialHalf===true) specialHalfCount++;
+    if(it.type===SUMMER_TYPE && it.summerHalf===true) summerHalfCount++;
   });
-  return raw-Math.floor(specialHalfCount/2)*(settings.specialHalf*2-DAY_MIN);
+  return raw-Math.floor(summerHalfCount/2)*(settings.summerHalf*2-DAY_MIN);
 }
 
 function currentAnnualRemainingMinutes(dateStr,excludeId=''){
@@ -1413,6 +1512,42 @@ function currentAnnualRemainingMinutes(dateStr,excludeId=''){
   return Math.max(0,available-annualTotal);
 }
 
+function summerUsedHalfUnits(items){
+  const settings=loadSettings();
+  let units=0;
+  (items||[]).forEach(it=>{
+    if(it.type!==SUMMER_TYPE) return;
+    const delta=Number(it.delta)||0;
+    if(it.summerHalf===true || (it.halfDay===true && delta===settings.summerHalf) || delta===settings.summerHalf) units+=1;
+    else if(delta===DAY_MIN) units+=2;
+    else units+=Math.max(0,Math.round((delta/DAY_MIN)*2));
+  });
+  return units;
+}
+function fmtSummerUnits(units){
+  const u=Math.max(0,Math.round(Number(units)||0));
+  const d=Math.floor(u/2), half=u%2===1;
+  if(!d && half) return '半日';
+  if(half) return `${d}日＋半日`;
+  return `${d}日`;
+}
+function summerGrantDaysForFY(settings,fy){
+  const b=settings.fiscalBalances?.[fy];
+  if(b && Number.isFinite(Number(b.summerGrantDays))) return Math.max(0,Math.min(31,toInt(b.summerGrantDays)));
+  if(fy===settings.currentFiscalYear && Number.isFinite(Number(settings.summerGrantDays))) return Math.max(0,Math.min(31,toInt(settings.summerGrantDays)));
+  return 6;
+}
+function currentSummerRemainingHalfUnits(dateStr,excludeId=''){
+  const st=loadState();
+  const settings=loadSettings();
+  const targetDate=dateStr || $('in_date')?.value || todayISO();
+  const fy=fiscalYearOf(targetDate);
+  const summerItems=st.items.filter(x=>x.id!==excludeId && inFiscalYear(x,fy) && x.type===SUMMER_TYPE);
+  const used=summerUsedHalfUnits(summerItems);
+  return Math.max(0,summerGrantDaysForFY(settings,fy)*2-used);
+}
+
+
 
 function renderSummary(){
   const st=loadState();
@@ -1420,15 +1555,23 @@ function renderSummary(){
   const fy=settings.currentFiscalYear;
   const fyItems=st.items.filter(x=>inFiscalYear(x,fy));
   const annualItems=fyItems.filter(x=>(x.type||'年次休暇')==='年次休暇');
-  const specialItems=fyItems.filter(x=>x.type==='特別休暇');
+  const specialItems=fyItems.filter(x=>x.type===SPECIAL_TYPE);
+  const summerItems=fyItems.filter(x=>x.type===SUMMER_TYPE);
 
   const annualTotal=adjustedTotal(annualItems);
   const specialTotal=adjustedTotal(specialItems);
+  const summerTotal=adjustedTotal(summerItems);
+  const summerUsedUnits=summerUsedHalfUnits(summerItems);
+  const summerGrantDays=summerGrantDaysForFY(settings,fy);
+  const summerRemainingUnits=Math.max(0,summerGrantDays*2-summerUsedUnits);
 
   $('annualTotal').textContent=fmt(annualTotal);
   $('specialTotal').textContent=fmt(specialTotal);
+  $('summerTotal').textContent=fmtSummerUnits(summerUsedUnits);
+  $('summerRemaining').textContent=`残り ${fmtSummerUnits(summerRemainingUnits)}`;
   $('inputAnnualTotal').textContent=fmtCompact(annualTotal);
   $('inputSpecialTotal').textContent=fmtCompact(specialTotal);
+  $('inputSummerTotal').textContent=`${fmtSummerUnits(summerUsedUnits)} / ${summerGrantDays}日`;
 
   const grantMinutes=grantMinutesOf(settings);
   const carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Math.round(Number(settings.carryMinutes)||0)));
@@ -1450,22 +1593,40 @@ function renderSummary(){
     $('remainingBadge').textContent='付与・繰越未設定';
     $('remainingSub').textContent=`${fyLabel(fy)}の付与年次休暇と繰越年次休暇を設定できます。`;
   }
-  $('copySub').textContent=`${fyLabel(fy)}：年次休暇 ${fmt(annualTotal)} ／ 特別休暇 ${fmt(specialTotal)}`;
+  $('copySub').textContent=`${fyLabel(fy)}：年次休暇 ${fmt(annualTotal)} ／ 特別休暇 ${fmt(specialTotal)} ／ 夏季休暇 ${fmtSummerUnits(summerUsedUnits)}（残り ${fmtSummerUnits(summerRemainingUnits)}）`;
 }
 
 function applyTypeUI(){
   const minuteInput=$('in_m');
   const addBtn=$('addBtn');
-  const isAnnual=selectedType==='年次休暇';
+  const isAnnual=selectedType===ANNUAL_TYPE;
+  const isSummer=selectedType===SUMMER_TYPE;
   const remain=currentAnnualRemainingMinutes();
+  const summerRemain=currentSummerRemainingHalfUnits();
   const canUseAnnualMinutes=isAnnual && remain!==null && remain>0 && remain<DAY_MIN;
 
-  minuteInput.disabled=isAnnual && !canUseAnnualMinutes;
-  if(isAnnual && !canUseAnnualMinutes) minuteInput.value=0;
-  minuteInput.style.opacity=(isAnnual && !canUseAnnualMinutes)?'.5':'1';
+  $('timeInputField').style.display=isSummer?'none':'';
+  $('summerRuleHint').hidden=!isSummer;
+
+  if(isSummer){
+    // 夏季休暇は半日または1日のクイック入力だけを使う。
+    if(!['half','day'].includes($('in_d').dataset.quickKind||'')){
+      $('in_d').value=0; $('in_h').value=0; $('in_m').value=0; clearQuickMark();
+    }
+    ['in_d','in_h','in_m'].forEach(id=>{$(id).disabled=true; $(id).style.opacity='.55';});
+  }else{
+    $('in_d').disabled=false;
+    $('in_h').disabled=false;
+    minuteInput.disabled=isAnnual && !canUseAnnualMinutes;
+    $('in_d').style.opacity='1';
+    $('in_h').style.opacity='1';
+    minuteInput.style.opacity=(isAnnual && !canUseAnnualMinutes)?'.5':'1';
+    if(isAnnual && !canUseAnnualMinutes) minuteInput.value=0;
+  }
+
   minuteInput.title=isAnnual
     ? (canUseAnnualMinutes ? `残り年次休暇が1日未満のため、使い切る場合のみ分単位で入力できます（残り ${fmtCompact(remain)}）` : '年次休暇は通常1時間単位です。残り年次休暇が1日未満になると、使い切る場合のみ分入力ができます。')
-    : '';
+    : (isSummer ? '夏季休暇は半日または1日単位で取得します。' : '');
 
   if(isAnnual && remain===null){
     addBtn.disabled=true;
@@ -1473,6 +1634,9 @@ function applyTypeUI(){
   }else if(isAnnual && remain<=0){
     addBtn.disabled=true;
     addBtn.textContent='残り年次休暇がありません';
+  }else if(isSummer && summerRemain<=0){
+    addBtn.disabled=true;
+    addBtn.textContent='残り夏季休暇がありません';
   }else{
     addBtn.disabled=false;
     addBtn.textContent='追加する';
@@ -1481,13 +1645,22 @@ function applyTypeUI(){
 
 function renderQuickButtons(){
   const s=loadSettings();
-  const half=selectedType==='特別休暇' ? s.specialHalf : s.annualHalf;
-  const buttons=[
-    {kind:'hour',min:60,label:'1時間',sub:''},
-    {kind:'half',min:half,label:'半日',sub:fmtHM(half)},
-    {kind:'day',min:DAY_MIN,label:'1日',sub:'7時間45分'}
-  ];
-  $('quickGrid').innerHTML=buttons.map(b=>`<button type="button" class="quick-btn" data-kind="${b.kind}" data-min="${b.min}">${b.label}${b.sub?`<small>${b.sub}</small>`:''}</button>`).join('');
+  const half=selectedType===SUMMER_TYPE ? s.summerHalf : (selectedType===SPECIAL_TYPE ? s.specialHalf : s.annualHalf);
+  let buttons;
+  if(selectedType===SUMMER_TYPE){
+    const remain=currentSummerRemainingHalfUnits();
+    buttons=[
+      {kind:'half',min:s.summerHalf,label:'半日',sub:fmtHM(s.summerHalf),disabled:remain<1},
+      {kind:'day',min:DAY_MIN,label:'1日',sub:'7時間45分',disabled:remain<2}
+    ];
+  }else{
+    buttons=[
+      {kind:'hour',min:60,label:'1時間',sub:'',disabled:false},
+      {kind:'half',min:half,label:'半日',sub:fmtHM(half),disabled:false},
+      {kind:'day',min:DAY_MIN,label:'1日',sub:'7時間45分',disabled:false}
+    ];
+  }
+  $('quickGrid').innerHTML=buttons.map(b=>`<button type="button" class="quick-btn" data-kind="${b.kind}" data-min="${b.min}" ${b.disabled?'disabled':''}>${b.label}${b.sub?`<small>${b.sub}</small>`:''}</button>`).join('');
 }
 
 function renderHalfSettings(){
@@ -1496,6 +1669,9 @@ function renderHalfSettings(){
   $('annualHalfM').value=s.annualHalf%60;
   $('specialHalfH').value=Math.floor(s.specialHalf/60);
   $('specialHalfM').value=s.specialHalf%60;
+  $('summerHalfH').value=Math.floor(s.summerHalf/60);
+  $('summerHalfM').value=s.summerHalf%60;
+  $('summerGrantDays').value=summerGrantDaysForFY(s,s.currentFiscalYear);
 
   const years=new Set([s.currentFiscalYear,fiscalYearOf(todayISO())]);
   Object.keys(s.fiscalBalances||{}).forEach(y=>years.add(Number(y)));
@@ -1521,32 +1697,40 @@ function renderHistory(){
   const fy=Number($('fiscalYearPicker').value)||loadSettings().currentFiscalYear;
 
   const fyItems=st.items.filter(x=>inFiscalYear(x,fy));
-  const fyAnnual=fyItems.filter(x=>(x.type||'年次休暇')==='年次休暇');
-  const fySpecial=fyItems.filter(x=>x.type==='特別休暇');
+  const fyAnnual=fyItems.filter(x=>(x.type||ANNUAL_TYPE)===ANNUAL_TYPE);
+  const fySpecial=fyItems.filter(x=>x.type===SPECIAL_TYPE);
+  const fySummer=fyItems.filter(x=>x.type===SUMMER_TYPE);
   $('yearAnnualTotal').textContent=fmtCompact(adjustedTotal(fyAnnual));
   $('yearSpecialTotal').textContent=fmtCompact(adjustedTotal(fySpecial));
+  $('yearSummerTotal').textContent=fmtSummerUnits(summerUsedHalfUnits(fySummer));
 
   const chronological=[...st.items].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
-  const typeCumulative={};
-  const annualByFY={}, specialByFY={};
+  const typeCumulativeText={};
+  const annualByFY={}, specialByFY={}, summerByFY={};
   chronological.forEach(it=>{
     const itemFY=fiscalYearOf(it.date||todayISO());
     if(!annualByFY[itemFY]) annualByFY[itemFY]=[];
     if(!specialByFY[itemFY]) specialByFY[itemFY]=[];
-    if((it.type||'年次休暇')==='年次休暇'){
+    if(!summerByFY[itemFY]) summerByFY[itemFY]=[];
+    if((it.type||ANNUAL_TYPE)===ANNUAL_TYPE){
       annualByFY[itemFY].push(it);
-      typeCumulative[it.id]=adjustedTotal(annualByFY[itemFY]);
-    }else if(it.type==='特別休暇'){
+      typeCumulativeText[it.id]=fmt(adjustedTotal(annualByFY[itemFY]));
+    }else if(it.type===SPECIAL_TYPE){
       specialByFY[itemFY].push(it);
-      typeCumulative[it.id]=adjustedTotal(specialByFY[itemFY]);
+      typeCumulativeText[it.id]=fmt(adjustedTotal(specialByFY[itemFY]));
+    }else if(it.type===SUMMER_TYPE){
+      summerByFY[itemFY].push(it);
+      typeCumulativeText[it.id]=fmtSummerUnits(summerUsedHalfUnits(summerByFY[itemFY]));
     }
   });
 
   const monthItems=chronological.filter(x=>(x.date||'').startsWith(month));
-  const monthAnnual=monthItems.filter(x=>(x.type||'年次休暇')==='年次休暇');
-  const monthSpecial=monthItems.filter(x=>x.type==='特別休暇');
+  const monthAnnual=monthItems.filter(x=>(x.type||ANNUAL_TYPE)===ANNUAL_TYPE);
+  const monthSpecial=monthItems.filter(x=>x.type===SPECIAL_TYPE);
+  const monthSummer=monthItems.filter(x=>x.type===SUMMER_TYPE);
   $('monthAnnualTotal').textContent=fmtCompact(adjustedTotal(monthAnnual));
   $('monthSpecialTotal').textContent=fmtCompact(adjustedTotal(monthSpecial));
+  $('monthSummerTotal').textContent=fmtSummerUnits(summerUsedHalfUnits(monthSummer));
 
   let items=historyViewMode==='year' ? chronological.filter(x=>inFiscalYear(x,fy)) : monthItems;
   if(currentFilter!=='すべて') items=items.filter(x=>x.type===currentFilter);
@@ -1557,15 +1741,18 @@ function renderHistory(){
 
   $('historyList').innerHTML=items.map(it=>{
     const parts=(it.date||todayISO()).split('-'), mo=Number(parts[1]), d=Number(parts[2]);
-    const cls=it.type==='特別休暇'?'special':'year';
-    const halfMark=it.specialHalf===true ? '・半日' : '';
+    const cls=it.type===SPECIAL_TYPE?'special':(it.type===SUMMER_TYPE?'summer':'year');
+    const halfMark=it.halfDay===true || it.summerHalf===true ? '・半日' : '';
+    const acquired=it.type===SUMMER_TYPE
+      ? (it.summerHalf===true || it.halfDay===true ? '半日' : '1日')
+      : fmtCompact(it.delta);
     return `<div class="card hist">
       <div class="hist-top">
         <div class="datebox"><div class="md">${mo}/${d}</div><div class="dow">（${dowJP(it.date||todayISO())}）</div></div>
         <div class="hist-main">
-          <div class="hist-line"><span class="pill ${cls}">${esc(it.type||'年次休暇')}${halfMark}</span><span class="hist-time">${esc(fmtCompact(it.delta))}</span></div>
+          <div class="hist-line"><span class="pill ${cls}">${esc(it.type||ANNUAL_TYPE)}${halfMark}</span><span class="hist-time">${esc(acquired)}</span></div>
         </div>
-        <div class="hist-cumul">種別累計<strong>${esc(fmt(typeCumulative[it.id]||0))}</strong></div>
+        <div class="hist-cumul">種別累計<strong>${esc(typeCumulativeText[it.id]||'0日')}</strong></div>
       </div>
       ${it.memo?`<div class="memo">${esc(it.memo)}</div>`:''}
       ${it.migrated?'<div class="memo">v1から引き継いだ履歴のため、日付はv2移行日です。</div>':''}
@@ -1646,12 +1833,30 @@ function add(){
       }
     }
   }
-  const isConfiguredSpecialHalf=selectedType==='特別休暇' && delta===settings.specialHalf;
+  const quickKind=$('in_d').dataset.quickKind||'';
+
+  if(selectedType===SUMMER_TYPE){
+    const isHalf=quickKind==='half' && delta===settings.summerHalf;
+    const isDay=quickKind==='day' && delta===DAY_MIN;
+    if(!isHalf && !isDay){
+      alert('夏季休暇は半日または1日単位で取得してください。');
+      return;
+    }
+    const remainUnits=currentSummerRemainingHalfUnits();
+    const needUnits=isHalf?1:2;
+    if(remainUnits<needUnits){
+      alert(`残り夏季休暇は ${fmtSummerUnits(remainUnits)} です。残数を超えて登録することはできません。`);
+      return;
+    }
+  }
+
+  const isHalfDay=quickKind==='half';
+  const isSummerHalf=selectedType===SUMMER_TYPE && isHalfDay && delta===settings.summerHalf;
 
   const st=loadState();
   st.items.push({
     id:uid(),date:$('in_date').value||todayISO(),type:selectedType,
-    d,h,m,delta,specialHalf:isConfiguredSpecialHalf,
+    d,h,m,delta,halfDay:isHalfDay,summerHalf:isSummerHalf,specialHalf:false,
     memo:$('in_memo').value.trim(),migrated:false,createdAt:Date.now(),cumul:0
   });
   recalc(st); saveState(st); clearInput(); renderAll();
@@ -1667,13 +1872,33 @@ function deleteItem(id){
   st.items=st.items.filter(x=>x.id!==id);
   recalc(st); saveState(st); renderAll(); toast('削除しました');
 }
+function applyEditTypeUI(preserve=true){
+  const isSummer=$('edit_type').value===SUMMER_TYPE;
+  $('editTimeField').style.display=isSummer?'none':'';
+  $('editSummerQuickField').hidden=!isSummer;
+  ['edit_d','edit_h','edit_m'].forEach(id=>{$(id).disabled=isSummer;});
+  if(isSummer && !preserve){
+    $('edit_d').value=0; $('edit_h').value=0; $('edit_m').value=0;
+  }
+}
+function setEditSummerQuick(kind){
+  const settings=loadSettings();
+  const mins=kind==='half'?settings.summerHalf:DAY_MIN;
+  const n=normalize(mins);
+  $('edit_d').value=n.d; $('edit_h').value=n.h; $('edit_m').value=n.m;
+  $('editModal').dataset.editSummerKind=kind;
+}
+
 function openEdit(id){
   const it=loadState().items.find(x=>x.id===id);
   if(!it) return;
   const n=normalize(it.delta);
   $('edit_id').value=id; $('edit_date').value=it.date||todayISO(); $('edit_type').value=it.type||'年次休暇';
   $('edit_d').value=n.d; $('edit_h').value=n.h; $('edit_m').value=n.m; $('edit_memo').value=it.memo||'';
-  $('editModal').dataset.wasSpecialHalf=it.specialHalf===true?'1':'0';
+  $('editModal').dataset.wasSummerHalf=it.summerHalf===true?'1':'0';
+  $('editModal').dataset.wasHalfDay=(it.halfDay===true || it.summerHalf===true)?'1':'0';
+  $('editModal').dataset.editSummerKind=it.type===SUMMER_TYPE ? ((it.summerHalf===true || it.halfDay===true)?'half':'day') : '';
+  applyEditTypeUI(true);
   $('editModal').classList.add('show');
 }
 function saveEdit(){
@@ -1684,6 +1909,20 @@ function saveEdit(){
   if(!delta){ alert('時間を入力してください。'); return; }
 
   const settings=loadSettings(), type=$('edit_type').value;
+  if(type===SUMMER_TYPE){
+    const isHalf=delta===settings.summerHalf;
+    const isDay=delta===DAY_MIN;
+    if(!isHalf && !isDay){
+      alert('夏季休暇は半日または1日単位で取得してください。');
+      return;
+    }
+    const remainUnits=currentSummerRemainingHalfUnits($('edit_date').value||todayISO(),id);
+    const needUnits=isHalf?1:2;
+    if(remainUnits<needUnits){
+      alert(`この年度で登録できる夏季休暇は残り ${fmtSummerUnits(remainUnits)} です。`);
+      return;
+    }
+  }
   if(type==='年次休暇'){
     const targetDate=$('edit_date').value||todayISO();
     const remain=currentAnnualRemainingMinutes(targetDate,id);
@@ -1697,11 +1936,13 @@ function saveEdit(){
       return;
     }
   }
-  const keepSpecialHalf=type==='特別休暇' && delta===settings.specialHalf;
+  const keepSummerHalf=type===SUMMER_TYPE && delta===settings.summerHalf;
+  const keepHalfDay=(type===SUMMER_TYPE && delta===settings.summerHalf)
+    || ($('editModal').dataset.wasHalfDay==='1' && ((type===ANNUAL_TYPE && delta===settings.annualHalf) || (type===SPECIAL_TYPE && delta===settings.specialHalf)));
 
   Object.assign(it,{
     date:$('edit_date').value||todayISO(),type,d,h,m,delta,
-    specialHalf:keepSpecialHalf,memo:$('edit_memo').value.trim(),migrated:false
+    halfDay:keepHalfDay,summerHalf:keepSummerHalf,specialHalf:false,memo:$('edit_memo').value.trim(),migrated:false
   });
   recalc(st); saveState(st); $('editModal').classList.remove('show'); renderAll(); toast('履歴を更新しました');
 }
@@ -1709,19 +1950,29 @@ function saveHalfSettings(){
   const s=loadSettings();
   const annual=toInt($('annualHalfH').value)*60+Math.min(59,toInt($('annualHalfM').value));
   const special=toInt($('specialHalfH').value)*60+Math.min(59,toInt($('specialHalfM').value));
-  if(annual<=0 || special<=0){ alert('半日の時間を正しく入力してください。'); renderHalfSettings(); return; }
+  const summer=toInt($('summerHalfH').value)*60+Math.min(59,toInt($('summerHalfM').value));
+  if(annual<=0 || special<=0 || summer<=0){ alert('半日の時間を正しく入力してください。'); renderHalfSettings(); return; }
   s.annualHalf=annual;
   s.specialHalf=special;
+  s.summerHalf=summer;
+  s.leaveRulesVersion=4;
   saveSettings(s);
 
-  // 「特別休暇の半日」として記録済みの履歴は、新しい半日設定に合わせて更新する。
+  // 半日ボタンで記録済みの履歴は、各休暇の最新設定に合わせて更新する。
   const st=loadState();
   st.items.forEach(it=>{
-    if(it.type==='特別休暇' && it.specialHalf===true){
-      it.delta=s.specialHalf;
-      const n=normalize(s.specialHalf);
-      it.d=n.d; it.h=n.h; it.m=n.m;
-    }
+    if(!(it.halfDay===true || it.summerHalf===true)) return;
+    let mins=null;
+    if(it.type===ANNUAL_TYPE) mins=s.annualHalf;
+    else if(it.type===SPECIAL_TYPE) mins=s.specialHalf;
+    else if(it.type===SUMMER_TYPE) mins=s.summerHalf;
+    if(mins===null) return;
+    it.delta=mins;
+    const n=normalize(mins);
+    it.d=n.d; it.h=n.h; it.m=n.m;
+    it.halfDay=true;
+    it.summerHalf=it.type===SUMMER_TYPE;
+    it.specialHalf=false;
   });
   recalc(st);
   saveState(st);
@@ -1746,6 +1997,14 @@ function saveAnnualBalanceSettings(){
 }
 
 
+function saveSummerGrantSettings(){
+  const s=loadSettings();
+  s.summerGrantDays=Math.max(0,Math.min(31,toInt($('summerGrantDays').value)));
+  saveSettings(s);
+  renderAll();
+  toast(`${fyLabel(s.currentFiscalYear)}の夏季休暇を保存しました`);
+}
+
 function switchFiscalYear(fy){
   const s=loadSettings();
   const target=Number(fy);
@@ -1754,6 +2013,7 @@ function switchFiscalYear(fy){
   const bal=s.fiscalBalances?.[target]||{annualGrantMinutes:0,carryMinutes:0};
   s.annualGrantMinutes=grantMinutesOf(bal);
   s.carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Number(bal.carryMinutes)||0));
+  s.summerGrantDays=Number.isFinite(Number(bal.summerGrantDays)) ? Math.max(0,Math.min(31,toInt(bal.summerGrantDays))) : 6;
   saveSettings(s);
   renderHistorySelectors();
   $('fiscalYearPicker').value=String(target);
@@ -1775,11 +2035,12 @@ function advanceFiscalYear(){
     toast(`${fyLabel(next)}はすでに作成されています`);
     return;
   }
-  if(!confirm(`${fyLabel(next)}へ更新します。\n\n現在の残り年次休暇：${fmt(remaining)}\n次年度への繰越：${fmt(carryToNext)}（最大20日）\n今年度付与は未設定（0日）になります。\n過去の履歴は残ります。`)) return;
-  s.fiscalBalances[next]={annualGrantMinutes:0,carryMinutes:carryToNext};
+  if(!confirm(`${fyLabel(next)}へ更新します。\n\n現在の残り年次休暇：${fmt(remaining)}\n次年度への繰越：${fmt(carryToNext)}（最大20日）\n今年度付与は未設定（0日）になります。\n夏季休暇は原則6日で作成します。\n過去の履歴は残ります。`)) return;
+  s.fiscalBalances[next]={annualGrantMinutes:0,carryMinutes:carryToNext,summerGrantDays:6};
   s.currentFiscalYear=next;
   s.annualGrantMinutes=0;
   s.carryMinutes=carryToNext;
+  s.summerGrantDays=6;
   saveSettings(s);
   renderHistorySelectors();
   $('fiscalYearPicker').value=String(next);
@@ -1802,10 +2063,14 @@ function copyTotal(){
   const fy=settings.currentFiscalYear;
   const fyItems=st.items.filter(x=>inFiscalYear(x,fy));
   const annualTotal=adjustedTotal(fyItems.filter(x=>(x.type||'年次休暇')==='年次休暇'));
-  const specialTotal=adjustedTotal(fyItems.filter(x=>x.type==='特別休暇'));
+  const specialTotal=adjustedTotal(fyItems.filter(x=>x.type===SPECIAL_TYPE));
+  const summerItems=fyItems.filter(x=>x.type===SUMMER_TYPE);
+  const summerTotal=adjustedTotal(summerItems);
+  const summerUnits=summerUsedHalfUnits(summerItems);
+  const summerRemain=Math.max(0,summerGrantDaysForFY(settings,fy)*2-summerUnits);
   const available=grantMinutesOf(settings)+Math.min(MAX_CARRY_MIN,Math.max(0,Number(settings.carryMinutes)||0));
   const remain=Math.max(0,available-annualTotal);
-  let txt=`${fyLabel(fy)}\n年次休暇累計：${fmt(annualTotal)}\n特別休暇累計：${fmt(specialTotal)}`;
+  let txt=`${fyLabel(fy)}\n年次休暇累計：${fmt(annualTotal)}\n特別休暇累計：${fmt(specialTotal)}\n夏季休暇累計：${fmtSummerUnits(summerUnits)}（残り ${fmtSummerUnits(summerRemain)}）`;
   if(available>0) txt+=`\n残り年次休暇：${fmt(remain)}`;
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(txt).then(()=>toast('累計をコピーしました')).catch(()=>window.prompt('コピーしてください',txt));
@@ -1820,20 +2085,21 @@ function exportCSV(){
   const st=loadState();
   const rows=[['年度','日付','休暇種別','半日扱い','追加（日）','追加（時）','追加（分）','種別累計（日）','種別累計（時）','種別累計（分）','メモ']];
   const chronological=[...st.items].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
-  const annualSoFar=[], specialSoFar=[];
+  const annualSoFar=[], specialSoFar=[], summerSoFar=[];
   chronological.forEach(it=>{
     if((it.type||'年次休暇')==='年次休暇') annualSoFar.push(it);
-    if(it.type==='特別休暇') specialSoFar.push(it);
-    const typeTotal=(it.type==='特別休暇') ? adjustedTotal(specialSoFar) : adjustedTotal(annualSoFar);
+    if(it.type===SPECIAL_TYPE) specialSoFar.push(it);
+    if(it.type===SUMMER_TYPE) summerSoFar.push(it);
+    const typeTotal=it.type===SPECIAL_TYPE ? adjustedTotal(specialSoFar) : (it.type===SUMMER_TYPE ? adjustedTotal(summerSoFar) : adjustedTotal(annualSoFar));
     const c=normalize(typeTotal);
-    rows.push([fyLabel(fiscalYearOf(it.date||todayISO())),it.date||'',it.type||'年次休暇',it.specialHalf?'はい':'いいえ',it.d||0,it.h||0,it.m||0,c.d,c.h,c.m,it.memo||'']);
+    rows.push([fyLabel(fiscalYearOf(it.date||todayISO())),it.date||'',it.type||'年次休暇',(it.halfDay===true || it.summerHalf===true)?'はい':'いいえ',it.d||0,it.h||0,it.m||0,c.d,c.h,c.m,it.memo||'']);
   });
   const csv='\uFEFF'+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\r\n');
   downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),`休暇時間履歴_${todayISO()}.csv`);
   toast('CSVを書き出しました');
 }
 function backup(){
-  const data={version:'2.5',exportedAt:new Date().toISOString(),state:loadState(),settings:loadSettings()};
+  const data={version:'2.7',exportedAt:new Date().toISOString(),state:loadState(),settings:loadSettings()};
   downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),`休暇時間バックアップ_${todayISO()}.json`);
   toast('バックアップを書き出しました');
 }
@@ -1844,7 +2110,18 @@ function restore(file){
       const data=JSON.parse(r.result);
       if(!data.state || !Array.isArray(data.state.items)) throw new Error('invalid');
       if(!confirm('現在のデータをバックアップ内容で置き換えます。よろしいですか？')) return;
-      if(data.settings) saveSettings({...DEFAULT_SETTINGS,...data.settings});
+      if(data.settings){
+        const restored={...DEFAULT_SETTINGS,...data.settings};
+        // v2.6以前のバックアップでは、特別休暇3時間55分設定を正しいルールへ移行する。
+        if(!Number.isFinite(Number(data.settings.leaveRulesVersion)) || Number(data.settings.leaveRulesVersion)<3){
+          restored.specialHalf=240;
+          restored.summerHalf=235;
+          restored.leaveRulesVersion=4;
+        }
+        if(!restored.fiscalBalances || typeof restored.fiscalBalances!=='object') restored.fiscalBalances={};
+        Object.keys(restored.fiscalBalances).forEach(y=>{ if(!Number.isFinite(Number(restored.fiscalBalances[y]?.summerGrantDays))) restored.fiscalBalances[y].summerGrantDays=6; });
+        saveSettings(restored);
+      }
       saveState(recalc(data.state)); applySettings(); renderAll(); toast('バックアップを復元しました');
     }catch(e){ alert('このバックアップファイルは読み込めません。'); }
   };
@@ -1968,14 +2245,17 @@ function init(){
 
   $('editCancel').addEventListener('click',()=>$('editModal').classList.remove('show'));
   $('editSave').addEventListener('click',saveEdit);
+  $('edit_type').addEventListener('change',()=>applyEditTypeUI(false));
+  document.querySelectorAll('.edit-summer-quick').forEach(b=>b.addEventListener('click',()=>setEditSummerQuick(b.dataset.kind)));
   $('editModal').addEventListener('click',e=>{ if(e.target===$('editModal')) $('editModal').classList.remove('show'); });
 
-  ['annualHalfH','annualHalfM','specialHalfH','specialHalfM'].forEach(id=>{
+  ['annualHalfH','annualHalfM','specialHalfH','specialHalfM','summerHalfH','summerHalfM'].forEach(id=>{
     $(id).addEventListener('change',saveHalfSettings);
   });
   ['grantDays','carryDays','carryHours','carryMinutes'].forEach(id=>{
     $(id).addEventListener('change',saveAnnualBalanceSettings);
   });
+  $('summerGrantDays').addEventListener('change',saveSummerGrantSettings);
   $('currentFiscalYearSelect').addEventListener('change',e=>switchFiscalYear(e.target.value));
   $('advanceFiscalYearBtn').addEventListener('click',advanceFiscalYear);
   $('copyRow').addEventListener('click',copyTotal);
