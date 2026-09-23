@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leave-time-calculator-v2-final-20260923';
+const CACHE_NAME = 'leave-time-calculator-v2-official-names-20260923';
 const ASSETS = [
   './',
   './index.html',
