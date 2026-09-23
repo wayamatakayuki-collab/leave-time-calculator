@@ -1159,7 +1159,7 @@ button:focus-visible{
           <input type="number" id="specialHalfM" min="0" max="59" inputmode="numeric" aria-label="特別休暇半日の分"><span>分</span>
         </div>
       </div>
-      <div class="setting-row">
+      <div class="setting-row carry-row grant-row">
         <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
         <div class="setting-text"><div class="setting-title">夏季休暇の半日</div><div class="setting-sub">初期値は3時間55分。（半日2回分で1日として集計）</div></div>
         <div class="half-setting">
@@ -1207,7 +1207,7 @@ button:focus-visible{
     </div>
   </div>
 
-  <div class="setting-section summer-balance-section">
+  <div class="setting-section leave-balance-section summer-balance-section">
     <div class="setting-head">夏季休暇の管理</div>
     <div class="card setting-card">
       <div class="setting-row">
@@ -1284,7 +1284,7 @@ button:focus-visible{
     <div class="field" id="editSummerQuickField" hidden>
       <span class="label">夏季休暇の取得単位</span>
       <div class="quick-grid">
-        <button type="button" class="quick-btn edit-summer-quick" data-kind="half">半日<small>3時間55分</small></button>
+        <button type="button" class="quick-btn edit-summer-quick" data-kind="half">半日（3時間55分）</button>
         <button type="button" class="quick-btn edit-summer-quick" data-kind="day">1日<small>7時間45分</small></button>
       </div>
     </div>
@@ -1567,11 +1567,11 @@ function renderSummary(){
 
   $('annualTotal').textContent=fmt(annualTotal);
   $('specialTotal').textContent=fmt(specialTotal);
-  $('summerTotal').textContent=fmtSummerUnits(summerUsedUnits);
+  $('summerTotal').textContent=fmt(summerTotal);
   $('summerRemaining').textContent=`残り ${fmtSummerUnits(summerRemainingUnits)}`;
   $('inputAnnualTotal').textContent=fmtCompact(annualTotal);
   $('inputSpecialTotal').textContent=fmtCompact(specialTotal);
-  $('inputSummerTotal').textContent=`${fmtSummerUnits(summerUsedUnits)} / ${summerGrantDays}日`;
+  $('inputSummerTotal').textContent=`${fmtCompact(summerTotal)} / ${summerGrantDays}日`;
 
   const grantMinutes=grantMinutesOf(settings);
   const carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Math.round(Number(settings.carryMinutes)||0)));
@@ -1593,7 +1593,7 @@ function renderSummary(){
     $('remainingBadge').textContent='付与・繰越未設定';
     $('remainingSub').textContent=`${fyLabel(fy)}の付与年次休暇と繰越年次休暇を設定できます。`;
   }
-  $('copySub').textContent=`${fyLabel(fy)}：年次休暇 ${fmt(annualTotal)} ／ 特別休暇 ${fmt(specialTotal)} ／ 夏季休暇 ${fmtSummerUnits(summerUsedUnits)}（残り ${fmtSummerUnits(summerRemainingUnits)}）`;
+  $('copySub').textContent=`${fyLabel(fy)}：年次休暇 ${fmt(annualTotal)} ／ 特別休暇 ${fmt(specialTotal)} ／ 夏季休暇 ${fmt(summerTotal)}（残り ${fmtSummerUnits(summerRemainingUnits)}）`;
 }
 
 function applyTypeUI(){
@@ -1650,7 +1650,7 @@ function renderQuickButtons(){
   if(selectedType===SUMMER_TYPE){
     const remain=currentSummerRemainingHalfUnits();
     buttons=[
-      {kind:'half',min:s.summerHalf,label:'半日',sub:fmtHM(s.summerHalf),disabled:remain<1},
+      {kind:'half',min:s.summerHalf,label:`半日（${fmtHM(s.summerHalf)}）`,sub:'',disabled:remain<1},
       {kind:'day',min:DAY_MIN,label:'1日',sub:'7時間45分',disabled:remain<2}
     ];
   }else{
@@ -1702,7 +1702,7 @@ function renderHistory(){
   const fySummer=fyItems.filter(x=>x.type===SUMMER_TYPE);
   $('yearAnnualTotal').textContent=fmtCompact(adjustedTotal(fyAnnual));
   $('yearSpecialTotal').textContent=fmtCompact(adjustedTotal(fySpecial));
-  $('yearSummerTotal').textContent=fmtSummerUnits(summerUsedHalfUnits(fySummer));
+  $('yearSummerTotal').textContent=fmtCompact(adjustedTotal(fySummer));
 
   const chronological=[...st.items].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
   const typeCumulativeText={};
@@ -1720,7 +1720,7 @@ function renderHistory(){
       typeCumulativeText[it.id]=fmt(adjustedTotal(specialByFY[itemFY]));
     }else if(it.type===SUMMER_TYPE){
       summerByFY[itemFY].push(it);
-      typeCumulativeText[it.id]=fmtSummerUnits(summerUsedHalfUnits(summerByFY[itemFY]));
+      typeCumulativeText[it.id]=fmt(adjustedTotal(summerByFY[itemFY]));
     }
   });
 
@@ -1730,7 +1730,7 @@ function renderHistory(){
   const monthSummer=monthItems.filter(x=>x.type===SUMMER_TYPE);
   $('monthAnnualTotal').textContent=fmtCompact(adjustedTotal(monthAnnual));
   $('monthSpecialTotal').textContent=fmtCompact(adjustedTotal(monthSpecial));
-  $('monthSummerTotal').textContent=fmtSummerUnits(summerUsedHalfUnits(monthSummer));
+  $('monthSummerTotal').textContent=fmtCompact(adjustedTotal(monthSummer));
 
   let items=historyViewMode==='year' ? chronological.filter(x=>inFiscalYear(x,fy)) : monthItems;
   if(currentFilter!=='すべて') items=items.filter(x=>x.type===currentFilter);
@@ -1742,9 +1742,9 @@ function renderHistory(){
   $('historyList').innerHTML=items.map(it=>{
     const parts=(it.date||todayISO()).split('-'), mo=Number(parts[1]), d=Number(parts[2]);
     const cls=it.type===SPECIAL_TYPE?'special':(it.type===SUMMER_TYPE?'summer':'year');
-    const halfMark=it.halfDay===true || it.summerHalf===true ? '・半日' : '';
+    const halfMark=it.type===SUMMER_TYPE && (it.halfDay===true || it.summerHalf===true) ? `・半日（${fmtHM(loadSettings().summerHalf)}）` : (it.halfDay===true ? '・半日' : '');
     const acquired=it.type===SUMMER_TYPE
-      ? (it.summerHalf===true || it.halfDay===true ? '半日' : '1日')
+      ? (it.summerHalf===true || it.halfDay===true ? `半日（${fmtHM(loadSettings().summerHalf)}）` : '1日')
       : fmtCompact(it.delta);
     return `<div class="card hist">
       <div class="hist-top">
@@ -2070,7 +2070,7 @@ function copyTotal(){
   const summerRemain=Math.max(0,summerGrantDaysForFY(settings,fy)*2-summerUnits);
   const available=grantMinutesOf(settings)+Math.min(MAX_CARRY_MIN,Math.max(0,Number(settings.carryMinutes)||0));
   const remain=Math.max(0,available-annualTotal);
-  let txt=`${fyLabel(fy)}\n年次休暇累計：${fmt(annualTotal)}\n特別休暇累計：${fmt(specialTotal)}\n夏季休暇累計：${fmtSummerUnits(summerUnits)}（残り ${fmtSummerUnits(summerRemain)}）`;
+  let txt=`${fyLabel(fy)}\n年次休暇累計：${fmt(annualTotal)}\n特別休暇累計：${fmt(specialTotal)}\n夏季休暇累計：${fmt(summerTotal)}（残り ${fmtSummerUnits(summerRemain)}）`;
   if(available>0) txt+=`\n残り年次休暇：${fmt(remain)}`;
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(txt).then(()=>toast('累計をコピーしました')).catch(()=>window.prompt('コピーしてください',txt));
