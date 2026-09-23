@@ -53,7 +53,7 @@ main{padding:16px}.screen{display:none}.screen.active{display:block}
 .leave-dot{width:8px;height:8px;border-radius:50%}
 .leave-dot.year{background:#e5536d}.leave-dot.special{background:#22a267}
 .leave-summary-value{margin-top:7px;font-size:21px;font-weight:950;letter-spacing:-.03em;line-height:1.18}
-.leave-summary-min{margin-top:5px;font-size:10px;font-weight:700;color:#7990a8}
+
 .quick-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .remaining-card{margin-top:10px;background:linear-gradient(135deg,#fffdf5,#fff8da);border:1px solid #f5e7a8;border-radius:17px;padding:14px;position:relative;z-index:1}
 .remaining-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -118,7 +118,7 @@ textarea{resize:vertical;min-height:84px}.date-row{
 .month-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.month-stat{padding:11px;border-radius:14px;background:#f7fbff;border:1px solid #e1eef9}.month-stat .a{font-size:10px;color:var(--muted);font-weight:800}.month-stat .b{margin-top:3px;font-size:16px;font-weight:900}
 .filters{display:flex;gap:7px;overflow:auto;padding:2px 0 10px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.filter-btn{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 13px;color:#65758a;font-weight:800;font-size:12px}.filter-btn.active{background:var(--brand);border-color:var(--brand);color:#fff}
 .history-list{display:flex;flex-direction:column;gap:9px}.empty{padding:28px 18px;text-align:center;color:var(--muted);font-size:13px}.hist{padding:13px}.hist-top{display:flex;align-items:flex-start;gap:10px}.datebox{min-width:48px;text-align:center}.datebox .md{font-size:17px;font-weight:900}.datebox .dow{font-size:10px;color:var(--muted)}
-.hist-main{flex:1;min-width:0}.hist-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.pill{font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px}.pill.year{background:#fff1f3;color:#d7425c}.pill.special{background:#eef9f2;color:#168855}.hist-time{font-size:16px;font-weight:900}.hist-min{font-size:10px;color:var(--muted);margin-top:2px}
+.hist-main{flex:1;min-width:0}.hist-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.pill{font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px}.pill.year{background:#fff1f3;color:#d7425c}.pill.special{background:#eef9f2;color:#168855}.hist-time{font-size:16px;font-weight:900}
 .hist-cumul{text-align:right;font-size:10px;color:var(--muted);min-width:88px}.hist-cumul strong{display:block;color:var(--ink);font-size:12px;margin-top:3px}.memo{margin-top:8px;font-size:11px;color:#65758a;background:#f8fafc;border-radius:10px;padding:7px 9px;line-height:1.5}.hist-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.icon-btn{border:0;background:#f5f8fc;color:#58708a;border-radius:10px;min-width:48px;min-height:34px;font-weight:800}.icon-btn.danger{background:var(--danger-soft);color:var(--danger)}
 .setting-section{margin-top:12px}.setting-head{font-size:12px;color:#54708d;font-weight:900;margin:0 5px 7px}.setting-card{overflow:hidden}.setting-row{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #edf1f6;background:#fff}.setting-row:last-child{border-bottom:0}.setting-icon{width:34px;height:34px;border-radius:10px;background:#eef6ff;color:var(--brand);display:grid;place-items:center;font-size:14px;font-weight:900;flex:0 0 auto}.setting-text{flex:1;min-width:0}.setting-title{font-size:14px;font-weight:900}.setting-sub{font-size:10px;color:var(--muted);margin-top:2px}.setting-select{width:auto;min-width:118px;padding:9px 30px 9px 10px;min-height:40px}
 .half-setting{display:grid;grid-template-columns:48px auto 48px auto;align-items:center;gap:4px;font-size:11px;color:var(--muted);font-weight:800}
@@ -263,12 +263,10 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
       <div class="leave-summary-card">
         <div class="leave-summary-label"><span class="leave-dot year"></span>年休</div>
         <div id="annualTotal" class="leave-summary-value">0日 0時間 0分</div>
-        <div id="annualTotalMin" class="leave-summary-min">0分</div>
       </div>
       <div class="leave-summary-card">
         <div class="leave-summary-label"><span class="leave-dot special"></span>特休</div>
         <div id="specialTotal" class="leave-summary-value">0日 0時間 0分</div>
-        <div id="specialTotalMin" class="leave-summary-min">0分</div>
       </div>
     </div>
     <div class="remaining-card">
@@ -541,9 +539,7 @@ function renderSummary(){
   const specialTotal=adjustedTotal(specialItems);
 
   $('annualTotal').textContent=fmt(annualTotal);
-  $('annualTotalMin').textContent=`${annualTotal.toLocaleString()}分`;
   $('specialTotal').textContent=fmt(specialTotal);
-  $('specialTotalMin').textContent=`${specialTotal.toLocaleString()}分`;
 
   $('inputAnnualTotal').textContent=fmtCompact(annualTotal);
   $('inputSpecialTotal').textContent=fmtCompact(specialTotal);
@@ -608,16 +604,13 @@ function renderHalfSettings(){
 
 function renderHistory(){
   const st=loadState(), month=$('monthPicker').value||currentMonthISO();
-  const monthItems=st.items.filter(x=>(x.date||'').startsWith(month));
-  const monthAnnual=monthItems.filter(x=>(x.type||'年休')==='年休');
-  const monthSpecial=monthItems.filter(x=>x.type==='特休');
-  $('monthAnnualTotal').textContent=fmtCompact(adjustedTotal(monthAnnual));
-  $('monthSpecialTotal').textContent=fmtCompact(adjustedTotal(monthSpecial));
 
-  // 履歴の累計も年休・特休を混ぜず、各種別ごとに計算する。
+  // 日付の古い順（同日は登録順）に並べたうえで、種別累計を計算する。
+  // 表示順と累計の進み方を必ず一致させる。
+  const chronological=[...st.items].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
   const typeCumulative={};
   const annualSoFar=[], specialSoFar=[];
-  st.items.forEach(it=>{
+  chronological.forEach(it=>{
     if((it.type||'年休')==='年休'){
       annualSoFar.push(it);
       typeCumulative[it.id]=adjustedTotal(annualSoFar);
@@ -627,7 +620,13 @@ function renderHistory(){
     }
   });
 
-  let items=[...monthItems].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
+  const monthItems=chronological.filter(x=>(x.date||'').startsWith(month));
+  const monthAnnual=monthItems.filter(x=>(x.type||'年休')==='年休');
+  const monthSpecial=monthItems.filter(x=>x.type==='特休');
+  $('monthAnnualTotal').textContent=fmtCompact(adjustedTotal(monthAnnual));
+  $('monthSpecialTotal').textContent=fmtCompact(adjustedTotal(monthSpecial));
+
+  let items=[...monthItems];
   if(currentFilter!=='すべて') items=items.filter(x=>x.type===currentFilter);
 
   if(!items.length){
@@ -643,8 +642,7 @@ function renderHistory(){
       <div class="hist-top">
         <div class="datebox"><div class="md">${m}/${d}</div><div class="dow">（${dowJP(it.date||todayISO())}）</div></div>
         <div class="hist-main">
-          <div class="hist-line"><span class="pill ${cls}">${esc(it.type||'年休')}${halfMark}</span><span class="hist-time">${esc(fmtCompact(it.delta))}</span></div>
-          <div class="hist-min">${Number(it.delta)||0}分</div>
+          <div class="hist-line"><span class="pill ${cls}">${esc(it.type||'年休')}${halfMark}</span><span class="hist-time">${esc(fmt(it.delta))}</span></div>
         </div>
         <div class="hist-cumul">種別累計<strong>${esc(fmt(typeCumulative[it.id]||0))}</strong></div>
       </div>
@@ -790,14 +788,15 @@ function downloadBlob(blob,name){
 }
 function exportCSV(){
   const st=loadState();
-  const rows=[['日付','休暇種別','半日扱い','追加（日）','追加（時）','追加（分）','追加合計（分）','種別累計（日）','種別累計（時）','種別累計（分）','メモ']];
+  const rows=[['日付','休暇種別','半日扱い','追加（日）','追加（時）','追加（分）','種別累計（日）','種別累計（時）','種別累計（分）','メモ']];
+  const chronological=[...st.items].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
   const annualSoFar=[], specialSoFar=[];
-  st.items.forEach(it=>{
+  chronological.forEach(it=>{
     if((it.type||'年休')==='年休') annualSoFar.push(it);
     if(it.type==='特休') specialSoFar.push(it);
     const typeTotal=(it.type==='特休') ? adjustedTotal(specialSoFar) : adjustedTotal(annualSoFar);
     const c=normalize(typeTotal);
-    rows.push([it.date||'',it.type||'年休',it.specialHalf?'はい':'いいえ',it.d||0,it.h||0,it.m||0,it.delta||0,c.d,c.h,c.m,it.memo||'']);
+    rows.push([it.date||'',it.type||'年休',it.specialHalf?'はい':'いいえ',it.d||0,it.h||0,it.m||0,c.d,c.h,c.m,it.memo||'']);
   });
   const csv='\uFEFF'+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\r\n');
   downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),`休暇時間履歴_${todayISO()}.csv`);
