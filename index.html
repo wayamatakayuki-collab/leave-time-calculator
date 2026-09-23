@@ -731,6 +731,21 @@ input[type="month"].choice-control{
   .navbtn{flex-direction:row !important;justify-content:center !important;}
 }
 
+
+/* 操作感：押したことが伝わるマイクロインタラクション */
+button{
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .12s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,filter .16s ease,background-color .16s ease;
+  transform-origin:center;
+}
+button:not(:disabled):active{transform:translateY(1px) scale(.965);filter:brightness(.97)}
+button:disabled{cursor:not-allowed;opacity:.48}
+@keyframes buttonPop{0%{transform:scale(1)}45%{transform:scale(.94)}72%{transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes successGlow{0%{box-shadow:0 10px 24px rgba(22,135,248,.24)}50%{box-shadow:0 0 0 7px rgba(22,168,104,.13),0 12px 28px rgba(22,168,104,.22)}100%{box-shadow:0 10px 24px rgba(22,135,248,.24)}}
+.button-pop{animation:buttonPop .28s ease-out}
+.primary.action-success{animation:successGlow .52s ease-out}
+.quick-btn.button-pop,.today-btn.button-pop,.type-btn.button-pop,.navbtn.button-pop,.range-btn.button-pop,.filter-btn.button-pop,.icon-btn.button-pop,.fy-update-btn.button-pop{filter:brightness(.98)}
+
 </style>
 </head>
 <body>
@@ -892,11 +907,13 @@ input[type="month"].choice-control{
   <div class="setting-section">
     <div class="setting-head">年休の残数管理</div>
     <div class="card setting-card">
-      <div class="setting-row">
+      <div class="setting-row carry-row grant-row">
         <div class="setting-icon">付</div>
         <div class="setting-text"><div class="setting-title">今年度の付与年休</div><div class="setting-sub">今年度に新しく付与された日数</div></div>
-        <div class="half-setting">
-          <input type="number" id="annualGrantDays" min="0" max="60" inputmode="decimal" step="0.25" aria-label="今年度の付与年休日数"><span>日</span>
+        <div class="carry-grid grant-grid">
+          <input type="number" id="grantDays" min="0" max="60" inputmode="numeric" aria-label="今年度の付与年休の日"><span>日</span>
+          <input type="number" id="grantHours" min="0" max="7" inputmode="numeric" aria-label="今年度の付与年休の時間"><span>時間</span>
+          <input type="number" id="grantMinutes" min="0" max="59" inputmode="numeric" aria-label="今年度の付与年休の分"><span>分</span>
         </div>
       </div>
       <div class="setting-row carry-row">
@@ -986,7 +1003,7 @@ const KEY_V2 = 'leave_time_v2';
 const SETTINGS_KEY = 'leave_time_v2_settings';
 const $ = id => document.getElementById(id);
 
-const DEFAULT_SETTINGS = { dark:false, annualHalf:240, specialHalf:235, annualGrantDays:0, carryMinutes:0, currentFiscalYear:null, fiscalBalances:{} };
+const DEFAULT_SETTINGS = { dark:false, annualHalf:240, specialHalf:235, annualGrantMinutes:0, carryMinutes:0, currentFiscalYear:null, fiscalBalances:{} };
 let selectedType = '年休';
 let currentFilter = 'すべて';
 let historyViewMode = 'month';
@@ -1024,6 +1041,13 @@ function fiscalStart(fy){ return `${fy}-04-01`; }
 function fiscalEnd(fy){ return `${fy+1}-03-31`; }
 function inFiscalYear(item,fy){ const d=item.date||''; return d>=fiscalStart(fy) && d<=fiscalEnd(fy); }
 function fyLabel(fy){ return `${fy}年度`; }
+function grantMinutesOf(obj){
+  if(!obj) return 0;
+  if(Number.isFinite(Number(obj.annualGrantMinutes))) return Math.max(0,Math.round(Number(obj.annualGrantMinutes)));
+  // 旧版データ（annualGrantDays）との互換性
+  if(Number.isFinite(Number(obj.annualGrantDays))) return Math.max(0,Math.round(Number(obj.annualGrantDays)*DAY_MIN));
+  return 0;
+}
 
 function currentYear(){ return todayISO().slice(0,4); }
 function uid(){ return (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}_${Math.random()}`); }
@@ -1036,31 +1060,42 @@ function loadSettings(){
     const nowFY=fiscalYearOf(todayISO());
     const currentFY=Number.isFinite(Number(obj.currentFiscalYear)) ? Number(obj.currentFiscalYear) : nowFY;
     const balances=(obj.fiscalBalances && typeof obj.fiscalBalances==='object') ? obj.fiscalBalances : {};
-    // v2.4以前の単年度設定を、現在年度の設定へ自動移行する。
+    // 旧版の単年度設定を、現在年度へ自動移行する。
     if(!balances[currentFY]){
       balances[currentFY]={
-        annualGrantDays:Number.isFinite(Number(obj.annualGrantDays)) ? Number(obj.annualGrantDays) : DEFAULT_SETTINGS.annualGrantDays,
+        annualGrantMinutes:grantMinutesOf(obj),
         carryMinutes:Number.isFinite(Number(obj.carryMinutes)) ? Math.min(MAX_CARRY_MIN,Math.max(0,Number(obj.carryMinutes))) : DEFAULT_SETTINGS.carryMinutes
       };
     }
+    // 各年度の旧 annualGrantDays も分換算へ移行する。
+    Object.keys(balances).forEach(y=>{
+      const b=balances[y]||{};
+      b.annualGrantMinutes=grantMinutesOf(b);
+      b.carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Number(b.carryMinutes)||0));
+      balances[y]=b;
+    });
     return {
       dark: !!obj.dark,
       annualHalf: Number.isFinite(Number(obj.annualHalf)) ? Number(obj.annualHalf) : DEFAULT_SETTINGS.annualHalf,
       specialHalf: Number.isFinite(Number(obj.specialHalf)) ? Number(obj.specialHalf) : DEFAULT_SETTINGS.specialHalf,
-      annualGrantDays:Number(balances[currentFY]?.annualGrantDays||0),
+      annualGrantMinutes:grantMinutesOf(balances[currentFY]),
       carryMinutes:Math.min(MAX_CARRY_MIN,Math.max(0,Number(balances[currentFY]?.carryMinutes||0))),
       currentFiscalYear:currentFY,
       fiscalBalances:balances
     };
   }catch(e){
     const fy=fiscalYearOf(todayISO());
-    return {...DEFAULT_SETTINGS,currentFiscalYear:fy,fiscalBalances:{[fy]:{annualGrantDays:0,carryMinutes:0}}};
+    return {...DEFAULT_SETTINGS,currentFiscalYear:fy,fiscalBalances:{[fy]:{annualGrantMinutes:0,carryMinutes:0}}};
   }
 }
 function saveSettings(s){
   const fy=Number(s.currentFiscalYear)||fiscalYearOf(todayISO());
   if(!s.fiscalBalances || typeof s.fiscalBalances!=='object') s.fiscalBalances={};
-  s.fiscalBalances[fy]={annualGrantDays:Number(s.annualGrantDays)||0,carryMinutes:Math.min(MAX_CARRY_MIN,Math.max(0,Number(s.carryMinutes)||0))};
+  s.annualGrantMinutes=Math.max(0,Math.round(Number(s.annualGrantMinutes)||0));
+  s.carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Math.round(Number(s.carryMinutes)||0)));
+  s.fiscalBalances[fy]={annualGrantMinutes:s.annualGrantMinutes,carryMinutes:s.carryMinutes};
+  // 旧フィールドは保存しない（読み込み互換のみ維持）。
+  delete s.annualGrantDays;
   localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));
 }
 
@@ -1130,18 +1165,18 @@ function adjustedTotal(items){
   return raw-Math.floor(specialHalfCount/2)*(settings.specialHalf*2-DAY_MIN);
 }
 
-function currentAnnualRemainingMinutes(dateStr){
+function currentAnnualRemainingMinutes(dateStr,excludeId=''){
   const st=loadState();
   const settings=loadSettings();
   const targetDate=dateStr || $('in_date')?.value || todayISO();
   const fy=fiscalYearOf(targetDate);
-  const annualItems=st.items.filter(x=>inFiscalYear(x,fy) && (x.type||'年休')==='年休');
+  const annualItems=st.items.filter(x=>x.id!==excludeId && inFiscalYear(x,fy) && (x.type||'年休')==='年休');
   const annualTotal=adjustedTotal(annualItems);
   const bal=settings.fiscalBalances?.[fy] || (fy===settings.currentFiscalYear ? {
-    annualGrantDays:settings.annualGrantDays,
+    annualGrantMinutes:settings.annualGrantMinutes,
     carryMinutes:settings.carryMinutes
-  } : {annualGrantDays:0,carryMinutes:0});
-  const grantMinutes=Math.round((Number(bal.annualGrantDays)||0)*DAY_MIN);
+  } : {annualGrantMinutes:0,carryMinutes:0});
+  const grantMinutes=grantMinutesOf(bal);
   const carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Math.round(Number(bal.carryMinutes)||0)));
   const available=grantMinutes+carryMinutes;
   if(available<=0) return null;
@@ -1165,7 +1200,7 @@ function renderSummary(){
   $('inputAnnualTotal').textContent=fmtCompact(annualTotal);
   $('inputSpecialTotal').textContent=fmtCompact(specialTotal);
 
-  const grantMinutes=Math.round((Number(settings.annualGrantDays)||0)*DAY_MIN);
+  const grantMinutes=grantMinutesOf(settings);
   const carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Math.round(Number(settings.carryMinutes)||0)));
   const available=grantMinutes+carryMinutes;
   if(available>0){
@@ -1190,6 +1225,7 @@ function renderSummary(){
 
 function applyTypeUI(){
   const minuteInput=$('in_m');
+  const addBtn=$('addBtn');
   const isAnnual=selectedType==='年休';
   const remain=currentAnnualRemainingMinutes();
   const canUseAnnualMinutes=isAnnual && remain!==null && remain>0 && remain<DAY_MIN;
@@ -1198,8 +1234,19 @@ function applyTypeUI(){
   if(isAnnual && !canUseAnnualMinutes) minuteInput.value=0;
   minuteInput.style.opacity=(isAnnual && !canUseAnnualMinutes)?'.5':'1';
   minuteInput.title=isAnnual
-    ? (canUseAnnualMinutes ? `残り年休が1日未満のため、分単位で入力できます（残り ${fmtCompact(remain)}）` : '年休は通常1時間単位です。残り年休が1日未満になると分入力ができます。')
+    ? (canUseAnnualMinutes ? `残り年休が1日未満のため、使い切る場合のみ分単位で入力できます（残り ${fmtCompact(remain)}）` : '年休は通常1時間単位です。残り年休が1日未満になると、使い切る場合のみ分入力ができます。')
     : '';
+
+  if(isAnnual && remain===null){
+    addBtn.disabled=true;
+    addBtn.textContent='年休設定が必要です';
+  }else if(isAnnual && remain<=0){
+    addBtn.disabled=true;
+    addBtn.textContent='残り年休がありません';
+  }else{
+    addBtn.disabled=false;
+    addBtn.textContent='追加する';
+  }
 }
 
 function renderQuickButtons(){
@@ -1227,8 +1274,11 @@ function renderHalfSettings(){
   $('currentFiscalYearSelect').innerHTML=ys.map(y=>`<option value="${y}">${fyLabel(y)}</option>`).join('');
   $('currentFiscalYearSelect').value=String(s.currentFiscalYear);
 
-  const bal=s.fiscalBalances?.[s.currentFiscalYear]||{annualGrantDays:0,carryMinutes:0};
-  $('annualGrantDays').value=bal.annualGrantDays || '';
+  const bal=s.fiscalBalances?.[s.currentFiscalYear]||{annualGrantMinutes:0,carryMinutes:0};
+  const g=normalize(grantMinutesOf(bal));
+  $('grantDays').value=g.d || '';
+  $('grantHours').value=g.h || '';
+  $('grantMinutes').value=g.m || '';
   const c=normalize(bal.carryMinutes||0);
   $('carryDays').value=c.d || '';
   $('carryHours').value=c.h || '';
@@ -1342,12 +1392,30 @@ function add(){
   if(!delta){ alert('追加する時間を入力してください。'); return; }
 
   const settings=loadSettings();
-  if(selectedType==='年休' && m>0){
+  if(selectedType==='年休'){
     const remain=currentAnnualRemainingMinutes();
-    if(remain===null || remain<=0 || remain>=DAY_MIN){
-      alert('年休の分単位入力は、残り年休が1日未満のときだけ利用できます。');
-      applyTypeUI();
+    if(remain===null){
+      alert('年休を登録する前に、設定画面で今年度の付与年休・繰越年休を設定してください。');
       return;
+    }
+    if(remain<=0){
+      alert('残り年休は0です。これ以上、年休を登録することはできません。');
+      return;
+    }
+    if(delta>remain){
+      alert(`残り年休は ${fmtCompact(remain)} です。残数を超えて登録することはできません。`);
+      return;
+    }
+    if(m>0){
+      if(remain>=DAY_MIN){
+        alert('年休は通常1時間単位です。分単位で取得できるのは、残り年休が1日未満の場合だけです。');
+        applyTypeUI();
+        return;
+      }
+      if(delta!==remain){
+        alert(`分単位で取得する場合は、残っている年休 ${fmtCompact(remain)} をすべて取得してください。`);
+        return;
+      }
     }
   }
   const isConfiguredSpecialHalf=selectedType==='特休' && delta===settings.specialHalf;
@@ -1358,7 +1426,11 @@ function add(){
     d,h,m,delta,specialHalf:isConfiguredSpecialHalf,
     memo:$('in_memo').value.trim(),migrated:false,createdAt:Date.now(),cumul:0
   });
-  recalc(st); saveState(st); clearInput(); renderAll(); toast('追加しました');
+  recalc(st); saveState(st); clearInput(); renderAll();
+  const btn=$('addBtn');
+  btn.classList.remove('action-success'); void btn.offsetWidth; btn.classList.add('action-success');
+  setTimeout(()=>btn.classList.remove('action-success'),560);
+  toast('追加しました');
 }
 function deleteItem(id){
   const st=loadState(), it=st.items.find(x=>x.id===id);
@@ -1384,6 +1456,19 @@ function saveEdit(){
   if(!delta){ alert('時間を入力してください。'); return; }
 
   const settings=loadSettings(), type=$('edit_type').value;
+  if(type==='年休'){
+    const targetDate=$('edit_date').value||todayISO();
+    const remain=currentAnnualRemainingMinutes(targetDate,id);
+    if(remain===null){ alert('この年度の付与年休・繰越年休を設定してください。'); return; }
+    if(remain<=0){ alert('この年度の残り年休は0です。'); return; }
+    if(delta>remain){ alert(`この年度で登録できる年休は残り ${fmtCompact(remain)} です。`); return; }
+    if(m>0 && (remain>=DAY_MIN || delta!==remain)){
+      alert(remain<DAY_MIN
+        ? `分単位で取得する場合は、残っている年休 ${fmtCompact(remain)} をすべて取得してください。`
+        : '年休の分単位入力は、残り年休が1日未満の場合だけ利用できます。');
+      return;
+    }
+  }
   const keepSpecialHalf=type==='特休' && delta===settings.specialHalf;
 
   Object.assign(it,{
@@ -1418,8 +1503,11 @@ function saveHalfSettings(){
 
 function saveAnnualBalanceSettings(){
   const s=loadSettings();
-  const grant=parseFloat($('annualGrantDays').value);
-  s.annualGrantDays=Number.isFinite(grant) && grant>=0 ? grant : 0;
+  const gd=Math.min(60,toInt($('grantDays').value));
+  const gh=Math.min(7,toInt($('grantHours').value));
+  const gm=Math.min(59,toInt($('grantMinutes').value));
+  s.annualGrantMinutes=gd*DAY_MIN+gh*60+gm;
+
   const cd=Math.min(20,toInt($('carryDays').value));
   const ch=Math.min(7,toInt($('carryHours').value));
   const cm=Math.min(59,toInt($('carryMinutes').value));
@@ -1437,8 +1525,8 @@ function switchFiscalYear(fy){
   const target=Number(fy);
   if(!Number.isFinite(target)) return;
   s.currentFiscalYear=target;
-  const bal=s.fiscalBalances?.[target]||{annualGrantDays:0,carryMinutes:0};
-  s.annualGrantDays=Number(bal.annualGrantDays)||0;
+  const bal=s.fiscalBalances?.[target]||{annualGrantMinutes:0,carryMinutes:0};
+  s.annualGrantMinutes=grantMinutesOf(bal);
   s.carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Number(bal.carryMinutes)||0));
   saveSettings(s);
   renderHistorySelectors();
@@ -1452,7 +1540,7 @@ function advanceFiscalYear(){
   const next=current+1;
   const st=loadState();
   const currentAnnual=adjustedTotal(st.items.filter(x=>inFiscalYear(x,current) && (x.type||'年休')==='年休'));
-  const available=Math.round((Number(s.annualGrantDays)||0)*DAY_MIN)+Math.min(MAX_CARRY_MIN,Math.max(0,Number(s.carryMinutes)||0));
+  const available=grantMinutesOf(s)+Math.min(MAX_CARRY_MIN,Math.max(0,Number(s.carryMinutes)||0));
   const remaining=Math.max(0,available-currentAnnual);
   const carryToNext=Math.min(MAX_CARRY_MIN,remaining);
   if(!s.fiscalBalances || typeof s.fiscalBalances!=='object') s.fiscalBalances={};
@@ -1462,9 +1550,9 @@ function advanceFiscalYear(){
     return;
   }
   if(!confirm(`${fyLabel(next)}へ更新します。\n\n現在の残り年休：${fmt(remaining)}\n次年度への繰越：${fmt(carryToNext)}（最大20日）\n今年度付与は未設定（0日）になります。\n過去の履歴は残ります。`)) return;
-  s.fiscalBalances[next]={annualGrantDays:0,carryMinutes:carryToNext};
+  s.fiscalBalances[next]={annualGrantMinutes:0,carryMinutes:carryToNext};
   s.currentFiscalYear=next;
-  s.annualGrantDays=0;
+  s.annualGrantMinutes=0;
   s.carryMinutes=carryToNext;
   saveSettings(s);
   renderHistorySelectors();
@@ -1489,7 +1577,7 @@ function copyTotal(){
   const fyItems=st.items.filter(x=>inFiscalYear(x,fy));
   const annualTotal=adjustedTotal(fyItems.filter(x=>(x.type||'年休')==='年休'));
   const specialTotal=adjustedTotal(fyItems.filter(x=>x.type==='特休'));
-  const available=Math.round((Number(settings.annualGrantDays)||0)*DAY_MIN)+Math.min(MAX_CARRY_MIN,Math.max(0,Number(settings.carryMinutes)||0));
+  const available=grantMinutesOf(settings)+Math.min(MAX_CARRY_MIN,Math.max(0,Number(settings.carryMinutes)||0));
   const remain=Math.max(0,available-annualTotal);
   let txt=`${fyLabel(fy)}\n年休累計：${fmt(annualTotal)}\n特休累計：${fmt(specialTotal)}`;
   if(available>0) txt+=`\n残り年休：${fmt(remain)}`;
@@ -1559,7 +1647,19 @@ function applySettings(){
   $('darkToggle').checked=s.dark;
 }
 
+function animateButton(btn){
+  if(!btn || btn.disabled) return;
+  btn.classList.remove('button-pop');
+  void btn.offsetWidth;
+  btn.classList.add('button-pop');
+  setTimeout(()=>btn.classList.remove('button-pop'),300);
+}
+
 function init(){
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('button');
+    if(btn) animateButton(btn);
+  },true);
   $('in_date').value=todayISO();
   $('monthPicker').value=currentMonthISO();
   populateYearPicker();
@@ -1608,7 +1708,7 @@ function init(){
   ['annualHalfH','annualHalfM','specialHalfH','specialHalfM'].forEach(id=>{
     $(id).addEventListener('change',saveHalfSettings);
   });
-  ['annualGrantDays','carryDays','carryHours','carryMinutes'].forEach(id=>{
+  ['grantDays','grantHours','grantMinutes','carryDays','carryHours','carryMinutes'].forEach(id=>{
     $(id).addEventListener('change',saveAnnualBalanceSettings);
   });
   $('currentFiscalYearSelect').addEventListener('change',e=>switchFiscalYear(e.target.value));
