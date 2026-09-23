@@ -442,6 +442,295 @@ input[type="month"].choice-control{
   body.dark #screenInput .compact-main{border-bottom-color:#2b3a4b}
 }
 
+
+
+/* =========================================================
+   Professional wide-screen redesign
+   Mobile (<768px) is untouched.
+   ========================================================= */
+@media (min-width:768px){
+  body{
+    padding:22px;
+    background:
+      radial-gradient(circle at 12% 8%,rgba(99,188,255,.18),transparent 30%),
+      radial-gradient(circle at 88% 18%,rgba(22,135,248,.08),transparent 26%),
+      #eef4fa;
+  }
+  .app{
+    max-width:1180px;
+    min-height:calc(100dvh - 44px);
+    border-radius:28px;
+    background:#f7f9fc;
+    box-shadow:0 24px 70px rgba(28,59,94,.12);
+    overflow:hidden;
+  }
+  .topbar{
+    position:relative;
+    padding:18px 24px;
+    border-radius:0;
+    background:rgba(255,255,255,.92);
+    border-bottom:1px solid #e7edf4;
+  }
+  .topbar-row{gap:12px}
+  h1{font-size:20px}
+  main{padding:22px 24px 28px}
+
+  /* Tablet input: form first, status second */
+  #screenInput.active{
+    display:grid;
+    grid-template-columns:minmax(0,1.55fr) minmax(250px,.8fr);
+    gap:18px;
+    align-items:start;
+  }
+  #screenInput .section{
+    grid-column:1;
+    grid-row:1;
+    margin:0;
+    padding:22px;
+    border-radius:22px;
+    box-shadow:0 8px 28px rgba(39,74,113,.07);
+  }
+  #screenInput .compact-status{
+    grid-column:2;
+    grid-row:1;
+    position:sticky;
+    top:18px;
+    display:block;
+    padding:20px;
+    border-radius:22px;
+    background:linear-gradient(155deg,#fafdff,#edf7ff);
+    border:1px solid #dceaf6;
+    box-shadow:0 10px 30px rgba(39,74,113,.07);
+  }
+  #screenInput .compact-status::before{
+    content:'現在の状況';
+    display:block;
+    margin-bottom:14px;
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:.04em;
+    color:#6a8097;
+  }
+  #screenInput .compact-main{
+    padding:0 0 16px;
+    border-bottom:1px solid #dfeaf4;
+  }
+  #screenInput .compact-label{font-size:11px}
+  #screenInput .compact-value{font-size:30px;margin-top:5px}
+  #screenInput .compact-side{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:12px;
+  }
+  #screenInput .compact-chip{
+    min-width:0;
+    padding:11px 8px;
+    background:#fff;
+    border:1px solid #e2ebf3;
+    box-shadow:none;
+  }
+  #screenInput .compact-chip span{font-size:10px}
+  #screenInput .compact-chip strong{font-size:12px;margin-top:4px}
+  #screenInput .section-title{font-size:17px;margin-bottom:16px}
+  #screenInput .field{margin-top:14px}
+  #screenInput .primary{margin-top:4px}
+
+  /* History: strong hierarchy, not equal columns everywhere */
+  #screenHistory.active{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    align-items:start;
+  }
+  #screenHistory .history-summary{
+    grid-column:1 / -1;
+    margin:0;
+    padding:20px;
+    display:grid;
+    grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);
+    gap:14px 18px;
+    align-items:stretch;
+    background:linear-gradient(140deg,#edf7ff,#f9fcff 60%,#fff);
+    box-shadow:0 8px 28px rgba(39,74,113,.07);
+  }
+  #screenHistory .history-summary .eyebrow{grid-column:1/-1;font-size:12px}
+  #screenHistory .leave-summary-grid{margin:0;gap:10px}
+  #screenHistory .leave-summary-card{padding:16px;border:1px solid #e2edf6;background:#fff}
+  #screenHistory .remaining-card{margin:0;padding:16px;display:flex;flex-direction:column;justify-content:center}
+  #screenHistory .annual-card,
+  #screenHistory .month-card:not(.annual-card){
+    margin:0;
+    padding:17px;
+    min-height:138px;
+    box-shadow:0 6px 22px rgba(39,74,113,.05);
+  }
+  #screenHistory .annual-card{grid-column:1}
+  #screenHistory .month-card:not(.annual-card){grid-column:2}
+  #screenHistory .history-range{grid-column:1;margin:2px 0 0;box-shadow:none}
+  #screenHistory .filters{grid-column:2;justify-content:flex-end;align-self:center;padding:2px 0 0}
+  #screenHistory .history-list{grid-column:1/-1;margin-top:0}
+  #screenHistory .hist{box-shadow:0 5px 18px rgba(39,74,113,.045)}
+
+  /* Settings: calm 2-column layout */
+  #screenSettings.active{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    align-items:start;
+  }
+  #screenSettings .setting-section{margin:0;min-width:0}
+  #screenSettings .setting-section:nth-child(1){grid-column:1}
+  #screenSettings .setting-section:nth-child(2){grid-column:2}
+  #screenSettings .setting-section:nth-child(3){grid-column:1 / -1}
+  #screenSettings .setting-section:nth-child(4){grid-column:1 / -1}
+  #screenSettings .setting-section:nth-child(5){grid-column:1 / -1}
+  #screenSettings .setting-head{font-size:12px;margin:0 5px 8px}
+  #screenSettings .setting-card,
+  #screenSettings .fy-card{box-shadow:0 6px 22px rgba(39,74,113,.05)}
+  #screenSettings .setting-section:nth-child(3) .setting-card{
+    display:grid;
+    grid-template-columns:1fr 1.18fr;
+  }
+  #screenSettings .setting-section:nth-child(3) .setting-row:first-child{
+    border-bottom:0;
+    border-right:1px solid #edf1f6;
+  }
+  #screenSettings .setting-section:nth-child(4) .setting-card{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  #screenSettings .setting-section:nth-child(4) .setting-row{
+    border-bottom:1px solid #edf1f6;
+  }
+  #screenSettings .setting-section:nth-child(4) .setting-row:nth-child(odd){border-right:1px solid #edf1f6}
+  #screenSettings .setting-section:nth-child(4) .setting-row:last-child{grid-column:1/-1;border-right:0}
+  #screenSettings .setting-section:nth-child(5) .setting-card{max-width:none}
+
+  .sheet{max-width:720px;border-radius:24px;margin-bottom:20px;padding-bottom:22px}
+  .app-credit{padding-bottom:90px}
+}
+
+/* Desktop: top navigation + focused workspace */
+@media (min-width:1024px){
+  body{padding:28px}
+  .app{
+    max-width:1280px;
+    min-height:calc(100dvh - 56px);
+    padding-bottom:0;
+    display:grid;
+    grid-template-rows:auto auto 1fr auto;
+  }
+  .topbar{grid-row:1;padding:18px 30px}
+  .topbar-row{max-width:1160px;width:100%;margin:0 auto}
+
+  .bottomnav{
+    grid-row:2;
+    position:relative;
+    left:auto;
+    bottom:auto;
+    transform:none;
+    width:100%;
+    max-width:none;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    padding:10px 24px;
+    border-top:0;
+    border-bottom:1px solid #e7edf4;
+    border-radius:0;
+    background:rgba(255,255,255,.9);
+    backdrop-filter:blur(12px);
+  }
+  .navbtn{
+    width:auto;
+    min-width:116px;
+    flex-direction:row;
+    justify-content:center;
+    gap:8px;
+    padding:9px 16px;
+    border-radius:12px;
+    font-size:12px;
+    color:#73859a;
+  }
+  .navbtn .ico{font-size:17px}
+  .navbtn.active{
+    color:#0872d4;
+    background:#edf7ff;
+    box-shadow:inset 0 0 0 1px #d6ebfb;
+  }
+  main{
+    grid-row:3;
+    width:100%;
+    max-width:1160px;
+    margin:0 auto;
+    padding:26px 28px 32px;
+  }
+  .app-credit{grid-row:4;padding:12px 30px 18px;text-align:right}
+
+  /* Input workspace */
+  #screenInput.active{
+    grid-template-columns:minmax(0,1.75fr) 330px;
+    gap:22px;
+  }
+  #screenInput .section{padding:26px 28px}
+  #screenInput .compact-status{top:22px;padding:22px}
+  #screenInput .compact-value{font-size:34px}
+  #screenInput .date-row{max-width:none}
+  #screenInput .section-title{font-size:18px}
+  #screenInput .type-row,#screenInput .time-grid,#screenInput .quick-grid{max-width:none}
+
+  /* History workspace */
+  #screenHistory.active{gap:16px}
+  #screenHistory .history-summary{padding:22px 24px;grid-template-columns:1.3fr .7fr}
+  #screenHistory .leave-summary-value{font-size:23px}
+  #screenHistory .annual-card,#screenHistory .month-card:not(.annual-card){padding:18px 20px}
+  #screenHistory .history-range{max-width:390px}
+  #screenHistory .filters{justify-self:end}
+  #screenHistory .hist{padding:15px 18px}
+  #screenHistory .hist-cumul{min-width:150px}
+
+  /* Settings */
+  #screenSettings.active{gap:20px;max-width:1120px;margin:0 auto}
+  #screenSettings .setting-row{padding:16px 18px}
+  #screenSettings .fy-card{padding:18px}
+  #screenSettings .setting-section:nth-child(4) .setting-card{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+  .toast{bottom:28px}
+  .modal{align-items:center}
+  .sheet{margin:0;border-radius:24px;max-height:88dvh}
+}
+
+@media (min-width:1380px){
+  .app{max-width:1320px}
+  main{max-width:1200px}
+  .topbar-row{max-width:1200px}
+}
+
+/* Dark-mode wide-screen refinements */
+@media (min-width:768px){
+  body.dark{background:#0d1520}
+  body.dark .app{background:#111a26}
+  body.dark .topbar,body.dark .bottomnav{background:rgba(17,27,40,.96);border-color:#263546}
+  body.dark #screenInput .compact-status{background:linear-gradient(155deg,#162536,#14202e);border-color:#2a4158}
+  body.dark #screenInput .compact-main{border-bottom-color:#2b3a4b}
+  body.dark #screenHistory .history-summary{background:linear-gradient(145deg,#16283b,#14202e)}
+  body.dark #screenHistory .leave-summary-card{background:#172333;border-color:#293a4b}
+  body.dark #screenSettings .setting-section:nth-child(3) .setting-row:first-child,
+  body.dark #screenSettings .setting-section:nth-child(4) .setting-row:nth-child(odd){border-color:#293746}
+}
+
+
+@media (min-width:1024px){
+  .app{grid-template-columns:1fr !important;}
+  .topbar,.bottomnav,main,.app-credit{grid-column:1 !important;}
+  .topbar{grid-row:1 !important;}
+  .bottomnav{grid-row:2 !important;flex-direction:row !important;height:auto !important;min-width:0 !important;border-right:0 !important;border-radius:0 !important;}
+  main{grid-row:3 !important;overflow:visible !important;}
+  .app-credit{grid-row:4 !important;}
+  .navbtn{flex-direction:row !important;justify-content:center !important;}
+}
+
 </style>
 </head>
 <body>
