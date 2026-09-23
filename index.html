@@ -7,17 +7,17 @@
   <meta name="description" content="年休・特休の取得時間、残り年休、繰越年休をスマホで管理できる休暇時間計算アプリです。">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="休暇計算">
+  <meta name="apple-mobile-web-app-title" content="休暇計算アプリ v2">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
   <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="休暇時間計算アプリ">
+  <meta property="og:title" content="休暇計算アプリ v2">
   <meta property="og:description" content="年休・特休の取得時間、残り年休、繰越年休をスマホでかんたん管理。">
   <meta property="og:image" content="https://wayamatakayuki-collab.github.io/leave-time-calculator/og-image.png">
   <meta property="og:url" content="https://wayamatakayuki-collab.github.io/leave-time-calculator/">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="休暇時間計算アプリ">
+  <meta name="twitter:title" content="休暇計算アプリ v2">
   <meta name="twitter:description" content="年休・特休の取得時間、残り年休、繰越年休をスマホでかんたん管理。">
   <meta name="twitter:image" content="https://wayamatakayuki-collab.github.io/leave-time-calculator/og-image.png">
 
@@ -130,10 +130,13 @@ textarea{resize:vertical;min-height:84px}.date-row{
 .navbtn{border:0;background:transparent;color:#7b8a9d;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;border-radius:12px;font-size:11px;font-weight:800}.navbtn .ico{font-size:20px}.navbtn.active{color:var(--brand);background:#f0f8ff}
 .toast{position:fixed;left:50%;bottom:calc(94px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:#18324d;color:#fff;padding:10px 14px;border-radius:999px;font-size:12px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:60}.toast.show{opacity:1;transform:translate(-50%,0)}
 .modal{display:none;position:fixed;inset:0;z-index:50;background:rgba(15,30,48,.42);align-items:flex-end;justify-content:center}.modal.show{display:flex}.sheet{width:min(680px,100%);max-height:92dvh;overflow:auto;background:#fff;border-radius:24px 24px 0 0;padding:14px 16px calc(18px + env(safe-area-inset-bottom))}.sheetbar{width:42px;height:5px;background:#d7dee7;border-radius:999px;margin:0 auto 12px}.sheet h3{margin:0 0 12px;font-size:17px}.sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.sheet-actions button{border:0;border-radius:13px;min-height:48px;font-weight:900}.cancel{background:#edf2f7;color:#50657c}.save{background:var(--brand);color:#fff}
-body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a4b;--brand-soft:#123454}.dark .app{background:linear-gradient(180deg,#111b28,#0f1722)}.dark .topbar,.dark .bottomnav{background:rgba(17,27,40,.94)}.dark .summary{background:linear-gradient(135deg,#173653,#15304a,#193d59)}.dark .summary .eyebrow,.dark .total-sub{color:#b8d8f2}.dark .stat,.dark .input,.dark select,.dark textarea,.dark .timebox input,.dark .type-btn,.dark .secondary,.dark .filter-btn,.dark .setting-row{background:#162130;color:var(--ink)}.dark .month-stat,.dark .memo{background:#111c29}.dark .quick-btn{background:#102c45;border-color:#234f73;color:#8ac9ff}.dark .sheet{background:#162130}
+body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a4b;--brand-soft:#123454}.dark .app{background:linear-gradient(180deg,#111b28,#0f1722)}.dark .topbar,.dark .bottomnav{background:rgba(17,27,40,.94)}.dark .summary{background:linear-gradient(135deg,#173653,#15304a,#193d59)}.dark .summary .eyebrow,.dark .total-sub{color:#b8d8f2}.dark .stat,.dark .input,.dark select,.dark textarea,.dark .timebox input,.dark .type-btn,.dark .secondary,.dark .filter-btn,.dark .setting-row{background:#162130;color:var(--ink)}.dark .month-stat,.dark .memo{background:#111c29}.dark .quick-btn{background:#102c45;border-color:#234f73;color:#8ac9ff}.dark .sheet{background:#162130}.dark .compact-status{background:rgba(22,33,48,.95);border-color:#2b435a}.dark .compact-chip{background:#111c29;border-color:#2b3a4b}
 @media (min-width:681px){body{padding:24px 0}.app{border-radius:28px;overflow:hidden;box-shadow:0 25px 60px rgba(25,54,90,.13)}}
 
 .compact-status{
+  position:sticky;
+  top:calc(65px + env(safe-area-inset-top));
+  z-index:16;
   display:grid;
   grid-template-columns:minmax(0,1fr) auto;
   gap:10px;
@@ -142,7 +145,9 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
   border:1px solid #d8eaf8;
   border-radius:18px;
   padding:12px 13px;
-  box-shadow:0 8px 22px rgba(38,76,120,.07);
+  box-shadow:0 8px 22px rgba(38,76,120,.10);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
 }
 .compact-main{min-width:0}
 .compact-label{font-size:10px;font-weight:900;color:#6d839a}
@@ -280,6 +285,14 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
       <div id="remainingSub" class="remaining-sub">設定画面で今年度の付与年休と繰越年休を設定できます。</div>
     </div>
   </div>
+  <div class="card month-card annual-card">
+    <div class="month-head"><div class="month-title">年間累計</div><select class="input month-select" id="yearPicker" aria-label="年間累計の年"></select></div>
+    <div class="month-stats">
+      <div class="month-stat"><div class="a">年休</div><div class="b" id="yearAnnualTotal">0日</div></div>
+      <div class="month-stat"><div class="a">特休</div><div class="b" id="yearSpecialTotal">0日</div></div>
+    </div>
+  </div>
+
   <div class="card month-card">
     <div class="month-head"><div class="month-title">月別集計</div><input class="input month-select" type="month" id="monthPicker"></div>
     <div class="month-stats">
@@ -443,6 +456,7 @@ function todayISO(){
   return `${y}-${m}-${day}`;
 }
 function currentMonthISO(){ return todayISO().slice(0,7); }
+function currentYear(){ return todayISO().slice(0,4); }
 function uid(){ return (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}_${Math.random()}`); }
 function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function dowJP(dateStr){ const d=new Date(`${dateStr}T00:00:00`); return ['日','月','火','水','木','金','土'][d.getDay()] || ''; }
@@ -602,8 +616,26 @@ function renderHalfSettings(){
   $('carryMinutes').value=c.m || '';
 }
 
+function populateYearPicker(){
+  const st=loadState();
+  const years=new Set(st.items.map(x=>(x.date||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)));
+  years.add(currentYear());
+  const current=$('yearPicker').value || currentYear();
+  const sorted=[...years].sort((a,b)=>b.localeCompare(a));
+  $('yearPicker').innerHTML=sorted.map(y=>`<option value="${y}">${y}年</option>`).join('');
+  $('yearPicker').value=sorted.includes(current)?current:currentYear();
+}
+
 function renderHistory(){
   const st=loadState(), month=$('monthPicker').value||currentMonthISO();
+  populateYearPicker();
+  const year=$('yearPicker').value||currentYear();
+
+  const yearItems=st.items.filter(x=>(x.date||'').startsWith(year+'-'));
+  const yearAnnual=yearItems.filter(x=>(x.type||'年休')==='年休');
+  const yearSpecial=yearItems.filter(x=>x.type==='特休');
+  $('yearAnnualTotal').textContent=fmtCompact(adjustedTotal(yearAnnual));
+  $('yearSpecialTotal').textContent=fmtCompact(adjustedTotal(yearSpecial));
 
   // 日付の古い順（同日は登録順）に並べたうえで、種別累計を計算する。
   // 表示順と累計の進み方を必ず一致させる。
@@ -642,7 +674,7 @@ function renderHistory(){
       <div class="hist-top">
         <div class="datebox"><div class="md">${m}/${d}</div><div class="dow">（${dowJP(it.date||todayISO())}）</div></div>
         <div class="hist-main">
-          <div class="hist-line"><span class="pill ${cls}">${esc(it.type||'年休')}${halfMark}</span><span class="hist-time">${esc(fmt(it.delta))}</span></div>
+          <div class="hist-line"><span class="pill ${cls}">${esc(it.type||'年休')}${halfMark}</span><span class="hist-time">${esc(fmtCompact(it.delta))}</span></div>
         </div>
         <div class="hist-cumul">種別累計<strong>${esc(fmt(typeCumulative[it.id]||0))}</strong></div>
       </div>
@@ -843,6 +875,7 @@ function applySettings(){
 function init(){
   $('in_date').value=todayISO();
   $('monthPicker').value=currentMonthISO();
+  populateYearPicker();
 
   $('todayBtn').addEventListener('click',()=>{$('in_date').value=todayISO();});
   $('typeRow').addEventListener('click',e=>{
@@ -861,6 +894,7 @@ function init(){
 
   document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>switchScreen(b.dataset.screen)));
   $('monthPicker').addEventListener('change',renderHistory);
+  $('yearPicker').addEventListener('change',renderHistory);
   $('filters').addEventListener('click',e=>{
     const b=e.target.closest('.filter-btn'); if(!b) return;
     currentFilter=b.dataset.filter;

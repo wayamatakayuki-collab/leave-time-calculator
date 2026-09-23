@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leave-time-calculator-v2-1';
+const CACHE_NAME = 'leave-time-calculator-v2-4';
 const ASSETS = [
   './',
   './index.html',
