@@ -858,6 +858,115 @@ button:focus-visible{
   .button-pop,.primary.action-success{animation:none!important}
 }
 
+
+/* ===== 年次休暇の残数管理：付与と繰越を完全に同じ基準線へ ===== */
+#screenSettings .leave-balance-section{
+  grid-column:1 / -1;
+}
+#screenSettings .leave-balance-section .setting-card{
+  display:block !important;
+}
+#screenSettings .leave-balance-section .setting-row{
+  display:grid !important;
+  grid-template-columns:44px minmax(0,1fr) 250px;
+  column-gap:14px;
+  align-items:center;
+  width:100%;
+}
+#screenSettings .leave-balance-section .setting-row:first-child{
+  border-right:0 !important;
+  border-bottom:1px solid #edf1f6 !important;
+}
+#screenSettings .leave-balance-section .grant-day-only,
+#screenSettings .leave-balance-section .carry-grid{
+  width:250px !important;
+  min-width:250px;
+  max-width:250px;
+  padding:0 !important;
+  margin:0 !important;
+  justify-self:end;
+  box-sizing:border-box;
+}
+#screenSettings .leave-balance-section .grant-day-only{
+  display:grid;
+  grid-template-columns:54px max-content 54px max-content 54px max-content;
+  align-items:center;
+  gap:6px;
+  justify-content:start;
+}
+#screenSettings .leave-balance-section .carry-grid{
+  display:grid;
+  grid-template-columns:54px max-content 54px max-content 54px max-content;
+  align-items:center;
+  gap:6px;
+  justify-content:start;
+}
+#screenSettings .leave-balance-section .grant-day-only input,
+#screenSettings .leave-balance-section .carry-grid input{
+  width:54px !important;
+  height:42px;
+  min-height:42px;
+  padding:0 6px;
+  box-sizing:border-box;
+}
+#screenSettings .leave-balance-section .grant-day-only span,
+#screenSettings .leave-balance-section .carry-grid span{
+  min-width:max-content;
+  text-align:left;
+}
+
+/* タブレット以下でも、両行の入力開始位置を同じにする */
+@media (max-width:767px){
+  #screenSettings .leave-balance-section .setting-row{
+    grid-template-columns:44px minmax(0,1fr);
+    row-gap:12px;
+    align-items:start;
+  }
+  #screenSettings .leave-balance-section .setting-icon{
+    grid-column:1;
+    grid-row:1;
+  }
+  #screenSettings .leave-balance-section .setting-text{
+    grid-column:2;
+    grid-row:1;
+  }
+  #screenSettings .leave-balance-section .grant-day-only,
+  #screenSettings .leave-balance-section .carry-grid{
+    grid-column:2;
+    grid-row:2;
+    justify-self:start;
+    width:250px !important;
+    min-width:250px;
+    max-width:250px;
+  }
+}
+@media (max-width:390px){
+  #screenSettings .leave-balance-section .grant-day-only,
+  #screenSettings .leave-balance-section .carry-grid{
+    width:238px !important;
+    min-width:238px;
+    max-width:238px;
+    grid-template-columns:48px max-content 48px max-content 48px max-content;
+    gap:5px;
+  }
+  #screenSettings .leave-balance-section .grant-day-only input,
+  #screenSettings .leave-balance-section .carry-grid input{
+    width:48px !important;
+  }
+}
+
+/* 設定アイコンは意味が伝わる線画へ */
+.setting-icon svg{
+  width:20px;
+  height:20px;
+  display:block;
+  stroke:currentColor;
+}
+.setting-icon.danger-icon{
+  color:#d94a59;
+  background:#fff0f2;
+}
+
 </style>
 </head>
 <body>
@@ -983,7 +1092,7 @@ button:focus-visible{
     <div class="setting-head">半日の設定</div>
     <div class="card setting-card">
       <div class="setting-row">
-        <div class="setting-icon">年</div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M4 9h16M8 13h3M13 13h3M8 17h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
         <div class="setting-text"><div class="setting-title">年次休暇の半日</div><div class="setting-sub">初期値は4時間。</div></div>
         <div class="half-setting">
           <input type="number" id="annualHalfH" min="0" max="7" inputmode="numeric" aria-label="年次休暇半日の時間"><span>時間</span>
@@ -991,7 +1100,7 @@ button:focus-visible{
         </div>
       </div>
       <div class="setting-row">
-        <div class="setting-icon">特</div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.6 4.3L18 9l-4.4 1.7L12 15l-1.6-4.3L6 9l4.4-1.7L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
         <div class="setting-text"><div class="setting-title">特別休暇の半日</div><div class="setting-sub">初期値は3時間55分。（半日2回分で1日として集計）</div></div>
         <div class="half-setting">
           <input type="number" id="specialHalfH" min="0" max="7" inputmode="numeric" aria-label="特別休暇半日の時間"><span>時間</span>
@@ -1016,18 +1125,18 @@ button:focus-visible{
     </div>
   </div>
 
-  <div class="setting-section">
+  <div class="setting-section leave-balance-section">
     <div class="setting-head">年次休暇の残数管理</div>
     <div class="card setting-card">
       <div class="setting-row carry-row grant-row">
-        <div class="setting-icon">付</div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M4 9h16M12 12v5M9.5 14.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
         <div class="setting-text"><div class="setting-title">今年度の付与年次休暇</div><div class="setting-sub">今年度に新しく付与された日数</div></div>
         <div class="grant-day-only">
           <input type="number" id="grantDays" min="0" max="60" inputmode="numeric" aria-label="今年度の付与年次休暇の日数"><span>日</span>
         </div>
       </div>
       <div class="setting-row carry-row">
-        <div class="setting-icon">繰</div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.1 8a7 7 0 0 1 11.8-1L20 12M4 12l2.1 5a7 7 0 0 0 11.8-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="setting-text"><div class="setting-title">繰越年次休暇</div><div class="setting-sub">前年度から繰り越した残数（最大20日）</div></div>
         <div class="carry-grid">
           <input type="number" id="carryDays" min="0" max="20" inputmode="numeric" aria-label="繰越年次休暇の日"><span>日</span>
@@ -1042,19 +1151,19 @@ button:focus-visible{
     <div class="setting-head">データ管理</div>
     <div class="card setting-card">
       <button type="button" class="setting-row" id="copyRow" style="width:100%;border:0;text-align:left">
-        <div class="setting-icon">複</div><div class="setting-text"><div class="setting-title">累計をコピー</div><div class="setting-sub" id="copySub"></div></div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="2"/></svg></div><div class="setting-text"><div class="setting-title">累計をコピー</div><div class="setting-sub" id="copySub"></div></div>
       </button>
       <button type="button" class="setting-row" id="exportRow" style="width:100%;border:0;text-align:left">
-        <div class="setting-icon">表</div><div class="setting-text"><div class="setting-title">CSVエクスポート</div><div class="setting-sub">履歴を表計算ソフトで開けます</div></div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M9 9v11M15 9v11" stroke="currentColor" stroke-width="2"/></svg></div><div class="setting-text"><div class="setting-title">CSVエクスポート</div><div class="setting-sub">履歴を表計算ソフトで開けます</div></div>
       </button>
       <button type="button" class="setting-row" id="backupRow" style="width:100%;border:0;text-align:left">
-        <div class="setting-icon">保</div><div class="setting-text"><div class="setting-title">バックアップを書き出す</div><div class="setting-sub">端末変更などに備えて保存できます</div></div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v11M8 10l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="setting-text"><div class="setting-title">バックアップを書き出す</div><div class="setting-sub">端末変更などに備えて保存できます</div></div>
       </button>
       <button type="button" class="setting-row" id="restoreRow" style="width:100%;border:0;text-align:left">
-        <div class="setting-icon">読</div><div class="setting-text"><div class="setting-title">バックアップを読み込む</div><div class="setting-sub">JSONファイルから復元します</div></div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21V10M8 14l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="setting-text"><div class="setting-title">バックアップを読み込む</div><div class="setting-sub">JSONファイルから復元します</div></div>
       </button>
       <button type="button" class="setting-row danger-row" id="resetRow" style="width:100%;border:0;text-align:left">
-        <div class="setting-icon">削</div><div class="setting-text"><div class="setting-title">全記録をリセット</div><div class="setting-sub">すべての年度の履歴と累計を削除します</div></div>
+        <div class="setting-icon danger-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="setting-text"><div class="setting-title">全記録をリセット</div><div class="setting-sub">すべての年度の履歴と累計を削除します</div></div>
       </button>
     </div>
   </div>
@@ -1063,7 +1172,7 @@ button:focus-visible{
     <div class="setting-head">表示</div>
     <div class="card setting-card">
       <label class="setting-row">
-        <div class="setting-icon">☾</div><div class="setting-text"><div class="setting-title">ダークモード</div><div class="setting-sub">暗い場所で見やすくします</div></div>
+        <div class="setting-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 15.4A8 8 0 0 1 8.6 4a8 8 0 1 0 11.4 11.4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="setting-text"><div class="setting-title">ダークモード</div><div class="setting-sub">暗い場所で見やすくします</div></div>
         <input class="toggle" type="checkbox" id="darkToggle">
       </label>
     </div>
