@@ -209,9 +209,65 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
 .fy-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .fy-title{font-size:15px;font-weight:900}
 .fy-sub{font-size:10px;color:var(--muted);margin-top:3px;font-weight:700}
-.fy-select{width:auto;min-width:118px;min-height:42px;padding:9px 30px 9px 11px}
+.fy-select{width:auto}
 .fy-update-btn{width:100%;margin-top:10px;border:1px solid #bfe3ff;background:#f2f9ff;color:#0872d4;border-radius:13px;min-height:46px;font-weight:900}
 .reset-note{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45}
+
+
+/* -------------------------------------------------
+   Unified picker design
+   基準：年休の残数管理の数値入力（白背景・薄い枠・角丸・太字）
+-------------------------------------------------- */
+.choice-control,
+select.choice-control,
+input[type="month"].choice-control{
+  box-sizing:border-box;
+  min-height:40px;
+  height:40px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background-color:#fff;
+  color:var(--ink);
+  font-size:14px;
+  font-weight:900;
+  line-height:1.2;
+  outline:none;
+  box-shadow:none;
+  transition:border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+select.choice-control{
+  -webkit-appearance:none;
+  appearance:none;
+  padding:0 36px 0 12px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7d92' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 11px center;
+  background-size:16px 16px;
+}
+input[type="month"].choice-control{
+  padding:0 10px;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.choice-control:focus{
+  border-color:var(--brand);
+  box-shadow:0 0 0 3px rgba(22,135,248,.12);
+}
+.dark .choice-control,
+.dark select.choice-control,
+.dark input[type="month"].choice-control{
+  background-color:#162130;
+  color:var(--ink);
+  border-color:var(--line);
+}
+.dark select.choice-control{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a7b7c9' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
+}
+/* 個別用途は幅だけ変え、見た目は共通 */
+#currentFiscalYearSelect{width:118px;min-width:118px;max-width:118px;}
+#fiscalYearPicker{width:128px;min-width:128px;max-width:128px;}
+#monthPicker{width:148px;min-width:148px;max-width:148px;}
+#edit_type{width:100%;height:48px;min-height:48px;border-radius:14px;font-size:16px;}
 
 </style>
 </head>
@@ -304,7 +360,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
     </div>
   </div>
   <div class="card month-card annual-card">
-    <div class="month-head"><div class="month-title">年度累計</div><select class="input month-select" id="fiscalYearPicker" aria-label="年度累計の年度"></select></div>
+    <div class="month-head"><div class="month-title">年度累計</div><select class="choice-control" id="fiscalYearPicker" aria-label="年度累計の年度"></select></div>
     <div class="month-stats">
       <div class="month-stat"><div class="a">年休</div><div class="b" id="yearAnnualTotal">0日</div></div>
       <div class="month-stat"><div class="a">特休</div><div class="b" id="yearSpecialTotal">0日</div></div>
@@ -312,7 +368,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
   </div>
 
   <div class="card month-card">
-    <div class="month-head"><div class="month-title">月別集計</div><input class="input month-select" type="month" id="monthPicker"></div>
+    <div class="month-head"><div class="month-title">月別集計</div><input class="choice-control" type="month" id="monthPicker"></div>
     <div class="month-stats">
       <div class="month-stat"><div class="a">年休</div><div class="b" id="monthAnnualTotal">0分</div></div>
       <div class="month-stat"><div class="a">特休</div><div class="b" id="monthSpecialTotal">0分</div></div>
@@ -365,7 +421,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
           <div class="fy-title">現在の年度</div>
           <div class="fy-sub">4月1日〜翌年3月31日で管理します</div>
         </div>
-        <select id="currentFiscalYearSelect" class="fy-select" aria-label="現在の年度"></select>
+        <select id="currentFiscalYearSelect" class="choice-control" aria-label="現在の年度"></select>
       </div>
       <button type="button" class="fy-update-btn" id="advanceFiscalYearBtn">次年度へ更新</button>
     </div>
@@ -443,7 +499,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
     <h3>履歴を編集</h3>
     <input type="hidden" id="edit_id">
     <div class="field"><label class="label" for="edit_date">日付</label><input class="input" type="date" id="edit_date"></div>
-    <div class="field"><label class="label" for="edit_type">休暇種別</label><select id="edit_type"><option>年休</option><option>特休</option></select></div>
+    <div class="field"><label class="label" for="edit_type">休暇種別</label><select id="edit_type" class="choice-control"><option>年休</option><option>特休</option></select></div>
     <div class="field"><span class="label">時間</span>
       <div class="time-grid">
         <div class="timebox"><span>日</span><input type="number" id="edit_d" min="0"></div>
