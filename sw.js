@@ -1,4 +1,4 @@
-const CACHE_NAME = 'leave-time-calculator-v2-summer-half-layout-fix-20260923';
+const CACHE_NAME = 'leave-time-calculator-v2-summer-quick-linebreak-20260923';
 const ASSETS = [
   './',
   './index.html',
