@@ -195,6 +195,24 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
 .app-credit{padding:12px 16px calc(8px + env(safe-area-inset-bottom));text-align:center;color:#7d8fa3;font-size:11px;font-weight:700;font-family:inherit}
 .dark .app-credit{color:#8ea0b4}
 
+
+.history-range{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 10px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:0 6px 18px rgba(38,76,120,.05)}
+.history-range-label{font-size:12px;font-weight:900;color:#61768d;white-space:nowrap}
+.range-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#eef4fa;border-radius:12px;min-width:174px}
+.range-btn{border:0;background:transparent;color:#708399;border-radius:9px;min-height:34px;padding:6px 12px;font-size:12px;font-weight:900}
+.range-btn.active{background:#fff;color:var(--brand);box-shadow:0 2px 8px rgba(40,85,130,.10)}
+.dark .history-range{background:#162130}.dark .range-switch{background:#101b28}.dark .range-btn.active{background:#223348}
+@media(max-width:360px){.history-range{padding:9px}.range-switch{min-width:154px}.range-btn{padding:6px 9px}}
+
+
+.fy-card{padding:14px;margin-bottom:12px}
+.fy-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.fy-title{font-size:15px;font-weight:900}
+.fy-sub{font-size:10px;color:var(--muted);margin-top:3px;font-weight:700}
+.fy-select{width:auto;min-width:118px;min-height:42px;padding:9px 30px 9px 11px}
+.fy-update-btn{width:100%;margin-top:10px;border:1px solid #bfe3ff;background:#f2f9ff;color:#0872d4;border-radius:13px;min-height:46px;font-weight:900}
+.reset-note{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45}
+
 </style>
 </head>
 <body>
@@ -286,7 +304,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
     </div>
   </div>
   <div class="card month-card annual-card">
-    <div class="month-head"><div class="month-title">年間累計</div><select class="input month-select" id="yearPicker" aria-label="年間累計の年"></select></div>
+    <div class="month-head"><div class="month-title">年度累計</div><select class="input month-select" id="fiscalYearPicker" aria-label="年度累計の年度"></select></div>
     <div class="month-stats">
       <div class="month-stat"><div class="a">年休</div><div class="b" id="yearAnnualTotal">0日</div></div>
       <div class="month-stat"><div class="a">特休</div><div class="b" id="yearSpecialTotal">0日</div></div>
@@ -298,6 +316,13 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
     <div class="month-stats">
       <div class="month-stat"><div class="a">年休</div><div class="b" id="monthAnnualTotal">0分</div></div>
       <div class="month-stat"><div class="a">特休</div><div class="b" id="monthSpecialTotal">0分</div></div>
+    </div>
+  </div>
+  <div class="history-range">
+    <div class="history-range-label">履歴の表示</div>
+    <div class="range-switch" id="historyRangeSwitch">
+      <button type="button" class="range-btn active" data-range="month">月別</button>
+      <button type="button" class="range-btn" data-range="year">年度</button>
     </div>
   </div>
   <div class="filters" id="filters">
@@ -333,6 +358,20 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
 
 
   <div class="setting-section">
+    <div class="setting-head">年度管理</div>
+    <div class="card fy-card">
+      <div class="fy-head">
+        <div>
+          <div class="fy-title">現在の年度</div>
+          <div class="fy-sub">4月1日〜翌年3月31日で管理します</div>
+        </div>
+        <select id="currentFiscalYearSelect" class="fy-select" aria-label="現在の年度"></select>
+      </div>
+      <button type="button" class="fy-update-btn" id="advanceFiscalYearBtn">次年度へ更新</button>
+    </div>
+  </div>
+
+  <div class="setting-section">
     <div class="setting-head">年休の残数管理</div>
     <div class="card setting-card">
       <div class="setting-row">
@@ -344,9 +383,9 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
       </div>
       <div class="setting-row carry-row">
         <div class="setting-icon">繰</div>
-        <div class="setting-text"><div class="setting-title">繰越年休</div><div class="setting-sub">前年度から繰り越した残数</div></div>
+        <div class="setting-text"><div class="setting-title">繰越年休</div><div class="setting-sub">前年度から繰り越した残数（最大20日）</div></div>
         <div class="carry-grid">
-          <input type="number" id="carryDays" min="0" max="60" inputmode="numeric" aria-label="繰越年休の日"><span>日</span>
+          <input type="number" id="carryDays" min="0" max="20" inputmode="numeric" aria-label="繰越年休の日"><span>日</span>
           <input type="number" id="carryHours" min="0" max="7" inputmode="numeric" aria-label="繰越年休の時間"><span>時間</span>
           <input type="number" id="carryMinutes" min="0" max="59" inputmode="numeric" aria-label="繰越年休の分"><span>分</span>
         </div>
@@ -370,7 +409,7 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
         <div class="setting-icon">読</div><div class="setting-text"><div class="setting-title">バックアップを読み込む</div><div class="setting-sub">JSONファイルから復元します</div></div>
       </button>
       <button type="button" class="setting-row danger-row" id="resetRow" style="width:100%;border:0;text-align:left">
-        <div class="setting-icon">削</div><div class="setting-text"><div class="setting-title">すべてのデータをリセット</div><div class="setting-sub">累計と履歴を削除します</div></div>
+        <div class="setting-icon">削</div><div class="setting-text"><div class="setting-title">全記録をリセット</div><div class="setting-sub">すべての年度の履歴と累計を削除します</div></div>
       </button>
     </div>
   </div>
@@ -423,14 +462,16 @@ body.dark{--bg:#0f1722;--card:#162130;--ink:#f5f8fc;--muted:#9aa9bb;--line:#2b3a
 'use strict';
 
 const DAY_MIN = 465;
+const MAX_CARRY_MIN = 20 * DAY_MIN;
 const KEY_V1 = 'worktime_accum_v1';
 const KEY_V2 = 'leave_time_v2';
 const SETTINGS_KEY = 'leave_time_v2_settings';
 const $ = id => document.getElementById(id);
 
-const DEFAULT_SETTINGS = { dark:false, annualHalf:240, specialHalf:235, annualGrantDays:0, carryMinutes:0 };
+const DEFAULT_SETTINGS = { dark:false, annualHalf:240, specialHalf:235, annualGrantDays:0, carryMinutes:0, currentFiscalYear:null, fiscalBalances:{} };
 let selectedType = '年休';
 let currentFilter = 'すべて';
+let historyViewMode = 'month';
 
 function toInt(v){ const n=parseInt(v,10); return Number.isFinite(n) ? Math.max(0,n) : 0; }
 function minutesFrom(d,h,m){ return toInt(d)*DAY_MIN + toInt(h)*60 + toInt(m); }
@@ -456,6 +497,16 @@ function todayISO(){
   return `${y}-${m}-${day}`;
 }
 function currentMonthISO(){ return todayISO().slice(0,7); }
+function fiscalYearOf(dateStr){
+  const d=dateStr ? new Date(`${dateStr}T00:00:00`) : new Date();
+  const y=d.getFullYear(), m=d.getMonth()+1;
+  return m>=4 ? y : y-1;
+}
+function fiscalStart(fy){ return `${fy}-04-01`; }
+function fiscalEnd(fy){ return `${fy+1}-03-31`; }
+function inFiscalYear(item,fy){ const d=item.date||''; return d>=fiscalStart(fy) && d<=fiscalEnd(fy); }
+function fyLabel(fy){ return `${fy}年度`; }
+
 function currentYear(){ return todayISO().slice(0,4); }
 function uid(){ return (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}_${Math.random()}`); }
 function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -464,18 +515,36 @@ function dowJP(dateStr){ const d=new Date(`${dateStr}T00:00:00`); return ['日',
 function loadSettings(){
   try{
     const obj=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');
+    const nowFY=fiscalYearOf(todayISO());
+    const currentFY=Number.isFinite(Number(obj.currentFiscalYear)) ? Number(obj.currentFiscalYear) : nowFY;
+    const balances=(obj.fiscalBalances && typeof obj.fiscalBalances==='object') ? obj.fiscalBalances : {};
+    // v2.4以前の単年度設定を、現在年度の設定へ自動移行する。
+    if(!balances[currentFY]){
+      balances[currentFY]={
+        annualGrantDays:Number.isFinite(Number(obj.annualGrantDays)) ? Number(obj.annualGrantDays) : DEFAULT_SETTINGS.annualGrantDays,
+        carryMinutes:Number.isFinite(Number(obj.carryMinutes)) ? Math.min(MAX_CARRY_MIN,Math.max(0,Number(obj.carryMinutes))) : DEFAULT_SETTINGS.carryMinutes
+      };
+    }
     return {
       dark: !!obj.dark,
       annualHalf: Number.isFinite(Number(obj.annualHalf)) ? Number(obj.annualHalf) : DEFAULT_SETTINGS.annualHalf,
       specialHalf: Number.isFinite(Number(obj.specialHalf)) ? Number(obj.specialHalf) : DEFAULT_SETTINGS.specialHalf,
-      annualGrantDays: Number.isFinite(Number(obj.annualGrantDays)) ? Number(obj.annualGrantDays) : DEFAULT_SETTINGS.annualGrantDays,
-      carryMinutes: Number.isFinite(Number(obj.carryMinutes)) ? Math.max(0,Number(obj.carryMinutes)) : DEFAULT_SETTINGS.carryMinutes
+      annualGrantDays:Number(balances[currentFY]?.annualGrantDays||0),
+      carryMinutes:Math.min(MAX_CARRY_MIN,Math.max(0,Number(balances[currentFY]?.carryMinutes||0))),
+      currentFiscalYear:currentFY,
+      fiscalBalances:balances
     };
   }catch(e){
-    return {...DEFAULT_SETTINGS};
+    const fy=fiscalYearOf(todayISO());
+    return {...DEFAULT_SETTINGS,currentFiscalYear:fy,fiscalBalances:{[fy]:{annualGrantDays:0,carryMinutes:0}}};
   }
 }
-function saveSettings(s){ localStorage.setItem(SETTINGS_KEY,JSON.stringify(s)); }
+function saveSettings(s){
+  const fy=Number(s.currentFiscalYear)||fiscalYearOf(todayISO());
+  if(!s.fiscalBalances || typeof s.fiscalBalances!=='object') s.fiscalBalances={};
+  s.fiscalBalances[fy]={annualGrantDays:Number(s.annualGrantDays)||0,carryMinutes:Math.min(MAX_CARRY_MIN,Math.max(0,Number(s.carryMinutes)||0))};
+  localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));
+}
 
 function defaultState(){ return {sum:0,items:[]}; }
 
@@ -545,24 +614,23 @@ function adjustedTotal(items){
 
 function renderSummary(){
   const st=loadState();
-
-  const annualItems=st.items.filter(x=>(x.type||'年休')==='年休');
-  const specialItems=st.items.filter(x=>x.type==='特休');
+  const settings=loadSettings();
+  const fy=settings.currentFiscalYear;
+  const fyItems=st.items.filter(x=>inFiscalYear(x,fy));
+  const annualItems=fyItems.filter(x=>(x.type||'年休')==='年休');
+  const specialItems=fyItems.filter(x=>x.type==='特休');
 
   const annualTotal=adjustedTotal(annualItems);
   const specialTotal=adjustedTotal(specialItems);
 
   $('annualTotal').textContent=fmt(annualTotal);
   $('specialTotal').textContent=fmt(specialTotal);
-
   $('inputAnnualTotal').textContent=fmtCompact(annualTotal);
   $('inputSpecialTotal').textContent=fmtCompact(specialTotal);
 
-  const settings=loadSettings();
   const grantMinutes=Math.round((Number(settings.annualGrantDays)||0)*DAY_MIN);
-  const carryMinutes=Math.max(0,Math.round(Number(settings.carryMinutes)||0));
+  const carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Math.round(Number(settings.carryMinutes)||0)));
   const available=grantMinutes+carryMinutes;
-
   if(available>0){
     const remain=available-annualTotal;
     const safeRemain=Math.max(0,remain);
@@ -578,10 +646,9 @@ function renderSummary(){
     $('remainingAnnual').textContent='—';
     $('inputRemainingAnnual').textContent='—';
     $('remainingBadge').textContent='付与・繰越未設定';
-    $('remainingSub').textContent='設定画面で今年度の付与年休と繰越年休を設定できます。';
+    $('remainingSub').textContent=`${fyLabel(fy)}の付与年休と繰越年休を設定できます。`;
   }
-
-  $('copySub').textContent=`年休 ${fmt(annualTotal)} ／ 特休 ${fmt(specialTotal)}`;
+  $('copySub').textContent=`${fyLabel(fy)}：年休 ${fmt(annualTotal)} ／ 特休 ${fmt(specialTotal)}`;
 }
 
 function applyTypeUI(){
@@ -609,46 +676,48 @@ function renderHalfSettings(){
   $('annualHalfM').value=s.annualHalf%60;
   $('specialHalfH').value=Math.floor(s.specialHalf/60);
   $('specialHalfM').value=s.specialHalf%60;
-  $('annualGrantDays').value=s.annualGrantDays || '';
-  const c=normalize(s.carryMinutes||0);
+
+  const years=new Set([s.currentFiscalYear,fiscalYearOf(todayISO())]);
+  Object.keys(s.fiscalBalances||{}).forEach(y=>years.add(Number(y)));
+  loadState().items.forEach(it=>years.add(fiscalYearOf(it.date||todayISO())));
+  const ys=[...years].filter(Number.isFinite).sort((a,b)=>b-a);
+  $('currentFiscalYearSelect').innerHTML=ys.map(y=>`<option value="${y}">${fyLabel(y)}</option>`).join('');
+  $('currentFiscalYearSelect').value=String(s.currentFiscalYear);
+
+  const bal=s.fiscalBalances?.[s.currentFiscalYear]||{annualGrantDays:0,carryMinutes:0};
+  $('annualGrantDays').value=bal.annualGrantDays || '';
+  const c=normalize(bal.carryMinutes||0);
   $('carryDays').value=c.d || '';
   $('carryHours').value=c.h || '';
   $('carryMinutes').value=c.m || '';
 }
 
-function populateYearPicker(){
-  const st=loadState();
-  const years=new Set(st.items.map(x=>(x.date||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)));
-  years.add(currentYear());
-  const current=$('yearPicker').value || currentYear();
-  const sorted=[...years].sort((a,b)=>b.localeCompare(a));
-  $('yearPicker').innerHTML=sorted.map(y=>`<option value="${y}">${y}年</option>`).join('');
-  $('yearPicker').value=sorted.includes(current)?current:currentYear();
-}
+function populateYearPicker(){ renderHistorySelectors(); }
 
 function renderHistory(){
-  const st=loadState(), month=$('monthPicker').value||currentMonthISO();
-  populateYearPicker();
-  const year=$('yearPicker').value||currentYear();
+  const st=loadState();
+  const month=$('monthPicker').value||currentMonthISO();
+  const fy=Number($('fiscalYearPicker').value)||loadSettings().currentFiscalYear;
 
-  const yearItems=st.items.filter(x=>(x.date||'').startsWith(year+'-'));
-  const yearAnnual=yearItems.filter(x=>(x.type||'年休')==='年休');
-  const yearSpecial=yearItems.filter(x=>x.type==='特休');
-  $('yearAnnualTotal').textContent=fmtCompact(adjustedTotal(yearAnnual));
-  $('yearSpecialTotal').textContent=fmtCompact(adjustedTotal(yearSpecial));
+  const fyItems=st.items.filter(x=>inFiscalYear(x,fy));
+  const fyAnnual=fyItems.filter(x=>(x.type||'年休')==='年休');
+  const fySpecial=fyItems.filter(x=>x.type==='特休');
+  $('yearAnnualTotal').textContent=fmtCompact(adjustedTotal(fyAnnual));
+  $('yearSpecialTotal').textContent=fmtCompact(adjustedTotal(fySpecial));
 
-  // 日付の古い順（同日は登録順）に並べたうえで、種別累計を計算する。
-  // 表示順と累計の進み方を必ず一致させる。
   const chronological=[...st.items].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
   const typeCumulative={};
-  const annualSoFar=[], specialSoFar=[];
+  const annualByFY={}, specialByFY={};
   chronological.forEach(it=>{
+    const itemFY=fiscalYearOf(it.date||todayISO());
+    if(!annualByFY[itemFY]) annualByFY[itemFY]=[];
+    if(!specialByFY[itemFY]) specialByFY[itemFY]=[];
     if((it.type||'年休')==='年休'){
-      annualSoFar.push(it);
-      typeCumulative[it.id]=adjustedTotal(annualSoFar);
+      annualByFY[itemFY].push(it);
+      typeCumulative[it.id]=adjustedTotal(annualByFY[itemFY]);
     }else if(it.type==='特休'){
-      specialSoFar.push(it);
-      typeCumulative[it.id]=adjustedTotal(specialSoFar);
+      specialByFY[itemFY].push(it);
+      typeCumulative[it.id]=adjustedTotal(specialByFY[itemFY]);
     }
   });
 
@@ -658,21 +727,20 @@ function renderHistory(){
   $('monthAnnualTotal').textContent=fmtCompact(adjustedTotal(monthAnnual));
   $('monthSpecialTotal').textContent=fmtCompact(adjustedTotal(monthSpecial));
 
-  let items=[...monthItems];
+  let items=historyViewMode==='year' ? chronological.filter(x=>inFiscalYear(x,fy)) : monthItems;
   if(currentFilter!=='すべて') items=items.filter(x=>x.type===currentFilter);
-
   if(!items.length){
-    $('historyList').innerHTML='<div class="card empty">この条件の履歴はまだありません。</div>';
+    $('historyList').innerHTML=`<div class="card empty">${historyViewMode==='year' ? fyLabel(fy) : month.replace('-', '年')+'月'}の履歴はありません。</div>`;
     return;
   }
 
   $('historyList').innerHTML=items.map(it=>{
-    const parts=(it.date||todayISO()).split('-'), m=Number(parts[1]), d=Number(parts[2]);
+    const parts=(it.date||todayISO()).split('-'), mo=Number(parts[1]), d=Number(parts[2]);
     const cls=it.type==='特休'?'special':'year';
     const halfMark=it.specialHalf===true ? '・半日' : '';
     return `<div class="card hist">
       <div class="hist-top">
-        <div class="datebox"><div class="md">${m}/${d}</div><div class="dow">（${dowJP(it.date||todayISO())}）</div></div>
+        <div class="datebox"><div class="md">${mo}/${d}</div><div class="dow">（${dowJP(it.date||todayISO())}）</div></div>
         <div class="hist-main">
           <div class="hist-line"><span class="pill ${cls}">${esc(it.type||'年休')}${halfMark}</span><span class="hist-time">${esc(fmtCompact(it.delta))}</span></div>
         </div>
@@ -689,6 +757,7 @@ function renderHistory(){
 }
 
 function renderAll(){
+  renderHistorySelectors();
   renderHalfSettings();
   renderSummary();
   renderQuickButtons();
@@ -785,33 +854,82 @@ function saveAnnualBalanceSettings(){
   const s=loadSettings();
   const grant=parseFloat($('annualGrantDays').value);
   s.annualGrantDays=Number.isFinite(grant) && grant>=0 ? grant : 0;
-
-  const cd=toInt($('carryDays').value);
+  const cd=Math.min(20,toInt($('carryDays').value));
   const ch=Math.min(7,toInt($('carryHours').value));
   const cm=Math.min(59,toInt($('carryMinutes').value));
-  s.carryMinutes=cd*DAY_MIN+ch*60+cm;
-
+  const requestedCarry=cd*DAY_MIN+ch*60+cm;
+  s.carryMinutes=Math.min(MAX_CARRY_MIN,requestedCarry);
   saveSettings(s);
   renderAll();
-  toast('年休の残数設定を保存しました');
+  if(requestedCarry>MAX_CARRY_MIN) toast('繰越年休は最大20日に調整しました');
+  else toast(`${fyLabel(s.currentFiscalYear)}の年休設定を保存しました`);
+}
+
+
+function switchFiscalYear(fy){
+  const s=loadSettings();
+  const target=Number(fy);
+  if(!Number.isFinite(target)) return;
+  s.currentFiscalYear=target;
+  const bal=s.fiscalBalances?.[target]||{annualGrantDays:0,carryMinutes:0};
+  s.annualGrantDays=Number(bal.annualGrantDays)||0;
+  s.carryMinutes=Math.min(MAX_CARRY_MIN,Math.max(0,Number(bal.carryMinutes)||0));
+  saveSettings(s);
+  renderHistorySelectors();
+  $('fiscalYearPicker').value=String(target);
+  renderAll();
+  toast(`${fyLabel(target)}を表示しています`);
+}
+function advanceFiscalYear(){
+  const s=loadSettings();
+  const current=s.currentFiscalYear;
+  const next=current+1;
+  const st=loadState();
+  const currentAnnual=adjustedTotal(st.items.filter(x=>inFiscalYear(x,current) && (x.type||'年休')==='年休'));
+  const available=Math.round((Number(s.annualGrantDays)||0)*DAY_MIN)+Math.min(MAX_CARRY_MIN,Math.max(0,Number(s.carryMinutes)||0));
+  const remaining=Math.max(0,available-currentAnnual);
+  const carryToNext=Math.min(MAX_CARRY_MIN,remaining);
+  if(!s.fiscalBalances || typeof s.fiscalBalances!=='object') s.fiscalBalances={};
+  if(s.fiscalBalances[next]){
+    switchFiscalYear(next);
+    toast(`${fyLabel(next)}はすでに作成されています`);
+    return;
+  }
+  if(!confirm(`${fyLabel(next)}へ更新します。\n\n現在の残り年休：${fmt(remaining)}\n次年度への繰越：${fmt(carryToNext)}（最大20日）\n今年度付与は未設定（0日）になります。\n過去の履歴は残ります。`)) return;
+  s.fiscalBalances[next]={annualGrantDays:0,carryMinutes:carryToNext};
+  s.currentFiscalYear=next;
+  s.annualGrantDays=0;
+  s.carryMinutes=carryToNext;
+  saveSettings(s);
+  renderHistorySelectors();
+  $('fiscalYearPicker').value=String(next);
+  renderAll();
+  toast(`${fyLabel(next)}へ更新しました`);
+}
+function renderHistorySelectors(){
+  const s=loadSettings(), st=loadState();
+  const years=new Set([s.currentFiscalYear,fiscalYearOf(todayISO())]);
+  Object.keys(s.fiscalBalances||{}).forEach(y=>years.add(Number(y)));
+  st.items.forEach(it=>years.add(fiscalYearOf(it.date||todayISO())));
+  const ys=[...years].filter(Number.isFinite).sort((a,b)=>b-a);
+  $('fiscalYearPicker').innerHTML=ys.map(y=>`<option value="${y}">${fyLabel(y)}</option>`).join('');
+  if(!ys.includes(Number($('fiscalYearPicker').value))) $('fiscalYearPicker').value=String(s.currentFiscalYear);
 }
 
 function copyTotal(){
   const st=loadState();
-  const annualTotal=adjustedTotal(st.items.filter(x=>(x.type||'年休')==='年休'));
-  const specialTotal=adjustedTotal(st.items.filter(x=>x.type==='特休'));
   const settings=loadSettings();
-  const available=Math.round((Number(settings.annualGrantDays)||0)*DAY_MIN)+(Number(settings.carryMinutes)||0);
+  const fy=settings.currentFiscalYear;
+  const fyItems=st.items.filter(x=>inFiscalYear(x,fy));
+  const annualTotal=adjustedTotal(fyItems.filter(x=>(x.type||'年休')==='年休'));
+  const specialTotal=adjustedTotal(fyItems.filter(x=>x.type==='特休'));
+  const available=Math.round((Number(settings.annualGrantDays)||0)*DAY_MIN)+Math.min(MAX_CARRY_MIN,Math.max(0,Number(settings.carryMinutes)||0));
   const remain=Math.max(0,available-annualTotal);
-
-  let txt=`年休累計：${fmt(annualTotal)}\n特休累計：${fmt(specialTotal)}`;
+  let txt=`${fyLabel(fy)}\n年休累計：${fmt(annualTotal)}\n特休累計：${fmt(specialTotal)}`;
   if(available>0) txt+=`\n残り年休：${fmt(remain)}`;
-
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(txt).then(()=>toast('累計をコピーしました')).catch(()=>window.prompt('コピーしてください',txt));
-  }else{
-    window.prompt('コピーしてください',txt);
-  }
+  }else{ window.prompt('コピーしてください',txt); }
 }
 function downloadBlob(blob,name){
   const url=URL.createObjectURL(blob), a=document.createElement('a');
@@ -820,7 +938,7 @@ function downloadBlob(blob,name){
 }
 function exportCSV(){
   const st=loadState();
-  const rows=[['日付','休暇種別','半日扱い','追加（日）','追加（時）','追加（分）','種別累計（日）','種別累計（時）','種別累計（分）','メモ']];
+  const rows=[['年度','日付','休暇種別','半日扱い','追加（日）','追加（時）','追加（分）','種別累計（日）','種別累計（時）','種別累計（分）','メモ']];
   const chronological=[...st.items].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
   const annualSoFar=[], specialSoFar=[];
   chronological.forEach(it=>{
@@ -828,14 +946,14 @@ function exportCSV(){
     if(it.type==='特休') specialSoFar.push(it);
     const typeTotal=(it.type==='特休') ? adjustedTotal(specialSoFar) : adjustedTotal(annualSoFar);
     const c=normalize(typeTotal);
-    rows.push([it.date||'',it.type||'年休',it.specialHalf?'はい':'いいえ',it.d||0,it.h||0,it.m||0,c.d,c.h,c.m,it.memo||'']);
+    rows.push([fyLabel(fiscalYearOf(it.date||todayISO())),it.date||'',it.type||'年休',it.specialHalf?'はい':'いいえ',it.d||0,it.h||0,it.m||0,c.d,c.h,c.m,it.memo||'']);
   });
   const csv='\uFEFF'+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\r\n');
   downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),`休暇時間履歴_${todayISO()}.csv`);
   toast('CSVを書き出しました');
 }
 function backup(){
-  const data={version:'2.4',exportedAt:new Date().toISOString(),state:loadState(),settings:loadSettings()};
+  const data={version:'2.5',exportedAt:new Date().toISOString(),state:loadState(),settings:loadSettings()};
   downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),`休暇時間バックアップ_${todayISO()}.json`);
   toast('バックアップを書き出しました');
 }
@@ -853,8 +971,11 @@ function restore(file){
   r.readAsText(file);
 }
 function resetAll(){
-  if(!confirm('累計と履歴をすべて削除します。元に戻せません。よろしいですか？')) return;
-  saveState(defaultState()); renderAll(); toast('すべてリセットしました');
+  if(!confirm('すべての年度の履歴と累計を削除します。\n\n年休付与・繰越・半日設定などの設定は残ります。\nこの操作は元に戻せません。よろしいですか？')) return;
+  saveState(defaultState());
+  renderHistorySelectors();
+  renderAll();
+  toast('全記録をリセットしました');
 }
 function toast(msg){
   const t=$('toast'); t.textContent=msg; t.classList.add('show');
@@ -894,7 +1015,13 @@ function init(){
 
   document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>switchScreen(b.dataset.screen)));
   $('monthPicker').addEventListener('change',renderHistory);
-  $('yearPicker').addEventListener('change',renderHistory);
+  $('fiscalYearPicker').addEventListener('change',renderHistory);
+  $('historyRangeSwitch').addEventListener('click',e=>{
+    const b=e.target.closest('.range-btn'); if(!b) return;
+    historyViewMode=b.dataset.range;
+    document.querySelectorAll('.range-btn').forEach(x=>x.classList.toggle('active',x===b));
+    renderHistory();
+  });
   $('filters').addEventListener('click',e=>{
     const b=e.target.closest('.filter-btn'); if(!b) return;
     currentFilter=b.dataset.filter;
@@ -917,6 +1044,8 @@ function init(){
   ['annualGrantDays','carryDays','carryHours','carryMinutes'].forEach(id=>{
     $(id).addEventListener('change',saveAnnualBalanceSettings);
   });
+  $('currentFiscalYearSelect').addEventListener('change',e=>switchFiscalYear(e.target.value));
+  $('advanceFiscalYearBtn').addEventListener('click',advanceFiscalYear);
   $('copyRow').addEventListener('click',copyTotal);
   $('exportRow').addEventListener('click',exportCSV);
   $('backupRow').addEventListener('click',backup);
